@@ -1,0 +1,35 @@
+export default class ModalHandler {
+    constructor();
+
+    clearDocumentBodyEvents(): void;
+
+    clearActiveModals(): void;
+
+    addA11yEvents(options: {
+      modalKey: string;
+      modalLm?: HTMLElement | null;
+      modalLmOuterLimits?: HTMLElement | null;
+      closeLms?: HTMLElement[] | null;
+      exemptLms?: HTMLElement[];
+      closeHandler: () => void;
+    }): void;
+
+    removeA11yEvents(options: {
+      modalKey: string;
+      modalLm?: HTMLElement | null;
+      closeLms?: HTMLElement[] | null;
+    }): void;
+
+    addFocus(options: {
+      modalKey: string;
+      firstFocusableLm: HTMLElement;
+      lastFocusedLm?: HTMLElement | null;
+      auto?: boolean;
+    }): HTMLElement | void;
+
+    restoreFocus(options: {
+      modalKey: string;
+      lastFocusedLm?: HTMLElement | null;
+      auto?: boolean;
+    }): void;
+  }

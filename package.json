@@ -1,0 +1,33 @@
+{
+  "name": "vanilla-aria-modals",
+  "version": "1.0.0",
+  "description": "Framework-agnostic accessible vanilla JavaScript modal event manager for focus trapping, keyboard interaction, outside click handling and stacked modals.",
+  "main": "src/ModalHandler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angelvalentino/vanilla-aria-modals.git"
+  },
+  "keywords": [
+    "modal",
+    "accessibility",
+    "aria",
+    "focus-trapping",
+    "keyboard",
+    "dialog",
+    "a11y",
+    "vanilla-js",
+    "ui",
+    "frontend",
+    "javascript"
+  ],
+  "author": "Angel Valentino <angelvalentino294@gmail.com> (https://angelvalentino.dev)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/angelvalentino/vanilla-aria-modals/issues"
+  },
+  "homepage": "https://github.com/angelvalentino/vanilla-aria-modals#readme",
+  "type": "module"
+}
