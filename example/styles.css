@@ -1,0 +1,161 @@
+*, 
+*::after, 
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 50px 30px;
+  font-family: sans-serif;
+  min-width: 400px;
+}
+
+button {
+  font-size: inherit;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.open-modal-btn {
+  padding: 15px;
+  cursor: pointer;
+  margin-bottom: 50px;
+  border: none;
+  background-color: hotpink;
+  color: #fff;
+  border-radius: 3px;
+  transition: background-color 0.15s;
+}
+
+.first-modal,
+.second-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  display: none;
+}
+
+.second-modal {
+  z-index: 20;
+}
+
+.first-modal__overlay,
+.second-modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(255, 140, 0, 0.4), rgba(138, 43, 226, 0.4));
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.second-modal__overlay {
+  backdrop-filter: blur(6px);
+  background: linear-gradient(160deg, rgba(255, 140, 0, 0.4), rgba(138, 43, 226, 0.4));
+  background-size: 200% 200%;
+  animation: gradientShift 8s ease infinite;
+}
+
+.first-modal__content,
+.second-modal__content {
+  background-color: white;
+  max-width: 350px;
+  width: 100%;
+  scrollbar-width: thin;
+  max-height: 95vh;
+  overflow-y: auto;
+  position: relative;
+  border-radius: 5px;
+  text-align: center;
+  padding: 50px;
+  font-size: 1.25rem;
+  transform: scale(0);
+  transition: transform 0.25s, opacity 0.25s;
+  z-index: 25;
+  text-align: center;
+}
+
+.first-modal__close-btn,
+.second-modal__close-btn {
+  line-height: 0;
+  border: none;
+  background-color: transparent;
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  transition: color 0.25s;
+}
+
+.first-modal__image {
+  width: 125px;
+  display: block;
+  margin: 0 auto;
+  margin-bottom: 20px;
+}
+
+.first-modal__text,
+.second-modal__text {
+  margin-bottom: 30px;
+}
+
+.second-modal__text {
+  margin-top: 20px;
+}
+
+.first-modal__close-btn svg,
+.second-modal__close-btn svg {
+  width: 30px;
+  cursor: pointer;
+}
+
+.first-modal__accept-btn,
+.second-modal__accept-btn {
+  padding: 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  border: none;
+  background-color: rgb(90, 185, 157);
+  color: white;
+  transition: background-color 0.15s;
+}
+
+.second-modal__accept-btn {
+  display: block;
+  width: 30%;
+  margin: 0 auto;
+}
+
+@media screen and (pointer: fine) and (hover: hover) { 
+  .first-modal__close-btn:is(:hover, :focus-visible),
+  .second-modal__close-btn:is(:hover, :focus-visible) {
+    color: red;
+  }
+  
+  .first-modal__accept-btn:is(:hover, :focus-visible),
+  .second-modal__accept-btn:is(:hover, :focus-visible) {
+    background-color: rgb(60, 187, 149);
+  }
+}
+
+.first-modal__accept-btn:active,
+.second-modal__accept-btn:active {
+  transition: none;
+  background-color: rgb(27, 179, 133);
+}
+
+.first-modal__close-btn:active,
+.second-modal__close-btn:active {
+  opacity: 0.7;
+}
