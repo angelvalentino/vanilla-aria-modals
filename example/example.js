@@ -1,6 +1,7 @@
 // Import and instancing modal handler class
 import ModalHandler from "../src/ModalHandler.js";
 const modalHandler = new ModalHandler();
+modalHandler.setDebug(true);
 
 // First modal close timeout ID
 let firstModalCloseTimId;
@@ -110,15 +111,6 @@ function openFirstModal(e) {
   firstModalAcceptBtn.addEventListener('click', openSecondModal);
 
   // Add ARIA event listeners
-  modalHandler.addA11yEvents({
-    modalKey: 'firstModal',
-    modalLm: firstModalContentLm,
-    modalLmOuterLimits: firstModalContentLm,
-    closeLms: firstModalCloseBtns,
-    closeHandler: closeFirstModal
-  });
-
-    // Add ARIA event listeners
   modalHandler.addA11yEvents({
     modalKey: 'firstModal',
     modalLm: firstModalContentLm,

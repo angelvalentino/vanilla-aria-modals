@@ -2,6 +2,7 @@ export default class ModalHandler {
   #eventsHandler;
   #activeModals;
   #focusHandler;
+  #debug
 
   constructor() {
     if (ModalHandler.instance) return ModalHandler.instance;
@@ -9,6 +10,12 @@ export default class ModalHandler {
     this.#eventsHandler = {};
     this.#activeModals = [];
     this.#focusHandler = {};
+    this.#debug = false;
+  }
+
+  setDebug(bool) {
+    this.#debug = Boolean(bool);
+    console.info(`[ModalHandler]: Debug mode ${this.#debug ? 'ON' : 'OFF'}`);
   }
 
   #trapFocus(e, element) {
@@ -65,24 +72,37 @@ export default class ModalHandler {
 
   #registerModal(modalKey) {
     if (this.#activeModals.includes(modalKey)) {
-      console.warn(`ModalHandler: modal with key "${modalKey}" is already registered. Skipping.`);
+      console.warn(`[ModalHandler]: Modal with key "${modalKey}" is already registered. Skipping.`);
       return false;
     }
 
     this.#activeModals.push(modalKey);
-    console.warn('REGISTER MODAL => ', this.#activeModals)
+
+    if (this.#debug) {
+      console.warn(`[ModalHandler][DEBUG]: Register modal with key => "${modalKey}"`);
+      console.warn('[ModalHandler][DEBUG]: Active modal stack => ', this.#activeModals);
+    }
+
     return true;
   }
   
   #unregisterModal(modalKey) {
     if (!this.#activeModals.includes(modalKey)) {
-      console.warn(`ModalHandler: modal with key "${modalKey}" was not registered. Nothing to remove.`);
+      console.warn(`[ModalHandler]: Modal with key "${modalKey}" was not registered. Nothing to remove.`);
       return false;
     }
 
-    console.warn('UNREGISTER MODAL BEFORE FILTERING => ', this.#activeModals)
+    if (this.#debug) {
+      console.warn('[ModalHandler][DEBUG]: Active modal stack before filtering => ', this.#activeModals);
+    }
+
     this.#activeModals = this.#activeModals.filter(key => key !== modalKey);
-    console.warn('UNREGISTER MODAL => ', this.#activeModals)
+
+    if (this.#debug) {
+      console.warn(`[ModalHandler][DEBUG]: Unregister modal with key => "${modalKey}"`);
+      console.warn('[ModalHandler][DEBUG]: Active modal stack after filtering => ', this.#activeModals);
+    }
+
     return true;
   }
   
@@ -115,7 +135,10 @@ export default class ModalHandler {
       e.stopPropagation();
       if (!this.#isActiveModal(modalKey)) return;
 
-      console.error('CLOSE MODAL => ', modalKey)
+      if (this.#debug) {
+        console.warn(`[ModalHandler][DEBUG]: Close modal with key => "${modalKey}"`);
+      }
+
       closeHandler(); // Only close if this is the topmost modal
     }
   }
@@ -138,6 +161,11 @@ export default class ModalHandler {
 
   clearActiveModals() {
     this.#activeModals.length = 0;
+  }
+
+  reset() {
+    this.clearDocumentBodyEvents();
+    this.clearActiveModals();
   }
 
   addA11yEvents({
@@ -244,7 +272,7 @@ export default class ModalHandler {
     auto = true
   }) {
     if (Object.hasOwn(this.#focusHandler, modalKey)) {
-      console.warn(`ModalHandler: duplicate focus registration for modal "${modalKey}"`);
+      console.warn(`[ModalHandler]: Duplicate focus registration for modal "${modalKey}"`);
       return;
     }
 
@@ -265,7 +293,7 @@ export default class ModalHandler {
     auto = true
   }) {
     if (!Object.hasOwn(this.#focusHandler, modalKey)) {
-      console.warn(`ModalHandler: No stored focus for modal "${modalKey}" to restore.`);
+      console.warn(`[ModalHandler]: No stored focus for modal "${modalKey}" to restore.`);
       return;
     }
 

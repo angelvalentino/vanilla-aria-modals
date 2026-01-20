@@ -1,9 +1,13 @@
 export default class ModalHandler {
     constructor();
 
+    setDebug(bool: boolean): void;
+
     clearDocumentBodyEvents(): void;
 
     clearActiveModals(): void;
+
+    reset(): void;
 
     addA11yEvents(options: {
       modalKey: string;
