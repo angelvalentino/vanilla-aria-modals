@@ -148,58 +148,61 @@ export default class ModalHandler {
     exemptLms = [],
     closeHandler
   }) {
-    // Register modal key and skip if already registered
-    const isNew = this.#registerModal(modalKey);
-    if (!isNew) return;
+    // Extra guard to protect against event bubbling after modal open
+    setTimeout(() => {
+      // Register modal key and skip if already registered
+      const isNew = this.#registerModal(modalKey);
+      if (!isNew) return;
 
-    // Register event handlers reference
-    const handleActiveModalClose = this.#handleActiveModalClose(modalKey, closeHandler);
-    const escapeKeyHandler = this.#handleEscapeKeyClose(handleActiveModalClose);
-    const outsideClickHandler = this.#handleOutsideClickClose(handleActiveModalClose, modalLmOuterLimits, exemptLms);
-    const trapFocusHandler = this.#handleTrapFocus(modalLm);
+      // Register event handlers reference
+      const handleActiveModalClose = this.#handleActiveModalClose(modalKey, closeHandler);
+      const escapeKeyHandler = this.#handleEscapeKeyClose(handleActiveModalClose);
+      const outsideClickHandler = this.#handleOutsideClickClose(handleActiveModalClose, modalLmOuterLimits, exemptLms);
+      const trapFocusHandler = this.#handleTrapFocus(modalLm);
 
-    // Attach event listeners
-    document.body.addEventListener('keydown', escapeKeyHandler);
-    
-    if (modalLmOuterLimits) {
-      document.body.addEventListener('click', outsideClickHandler)
-    }
-    if (modalLm) {
-      modalLm.addEventListener('keydown', trapFocusHandler)
-    }
-    if (closeLms && Array.isArray(closeLms)) {
-      closeLms.forEach(closeLm => {
-        closeLm.addEventListener('click', handleActiveModalClose);
-      });
-    }
-    
-    // Ensure eventsHandler object exists for this modal
-    if (!this.#eventsHandler[modalKey]) {
-      this.#eventsHandler[modalKey] = {};
-    }
-    const eventsHandler = this.#eventsHandler[modalKey];
+      // Attach event listeners
+      document.body.addEventListener('keydown', escapeKeyHandler);
+      
+      if (modalLmOuterLimits) {
+        document.body.addEventListener('click', outsideClickHandler)
+      }
+      if (modalLm) {
+        modalLm.addEventListener('keydown', trapFocusHandler)
+      }
+      if (closeLms && Array.isArray(closeLms)) {
+        closeLms.forEach(closeLm => {
+          closeLm.addEventListener('click', handleActiveModalClose);
+        });
+      }
+      
+      // Ensure eventsHandler object exists for this modal
+      if (!this.#eventsHandler[modalKey]) {
+        this.#eventsHandler[modalKey] = {};
+      }
+      const eventsHandler = this.#eventsHandler[modalKey];
 
-    // Ensure the documentBody object and array exist for this modal key
-    if (!this.#eventsHandler.documentBody) {
-       this.#eventsHandler.documentBody = {};
-    }
-    if (!this.#eventsHandler.documentBody[modalKey]) {
-      this.#eventsHandler.documentBody[modalKey] = [];
-    }
-    const documentEvents = this.#eventsHandler.documentBody[modalKey];
+      // Ensure the documentBody object and array exist for this modal key
+      if (!this.#eventsHandler.documentBody) {
+        this.#eventsHandler.documentBody = {};
+      }
+      if (!this.#eventsHandler.documentBody[modalKey]) {
+        this.#eventsHandler.documentBody[modalKey] = [];
+      }
+      const documentEvents = this.#eventsHandler.documentBody[modalKey];
 
-    // Store event handlers references so they can be removed later
-    eventsHandler.escapeKeyHandler = escapeKeyHandler;
-    modalLmOuterLimits && (eventsHandler.outsideClickHandler = outsideClickHandler);
-    modalLm && (eventsHandler.trapFocusHandler = trapFocusHandler);
-    closeLms && (eventsHandler.closeHandler = handleActiveModalClose);
+      // Store event handlers references so they can be removed later
+      eventsHandler.escapeKeyHandler = escapeKeyHandler;
+      modalLmOuterLimits && (eventsHandler.outsideClickHandler = outsideClickHandler);
+      modalLm && (eventsHandler.trapFocusHandler = trapFocusHandler);
+      closeLms && (eventsHandler.closeHandler = handleActiveModalClose);
 
-    // Keep references to body events for SPA view changes,
-    // so lingering events can be removed if the modal stays open across re-renders
-    documentEvents.push({ eventName: 'keydown', callback: escapeKeyHandler });
-    if (modalLmOuterLimits) {
-      documentEvents.push({ eventName: 'click', callback: outsideClickHandler });
-    }
+      // Keep references to body events for SPA view changes,
+      // so lingering events can be removed if the modal stays open across re-renders
+      documentEvents.push({ eventName: 'keydown', callback: escapeKeyHandler });
+      if (modalLmOuterLimits) {
+        documentEvents.push({ eventName: 'click', callback: outsideClickHandler });
+      }
+    });
   }
 
   removeA11yEvents({
