@@ -1,4 +1,4 @@
-// Import and instancing modal handler class
+// Import and instantiate modal handler class
 import ModalHandler from "../src/ModalHandler.js";
 const modalHandler = new ModalHandler();
 modalHandler.setDebug(true);
