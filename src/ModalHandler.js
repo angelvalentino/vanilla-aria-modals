@@ -2,7 +2,7 @@ export default class ModalHandler {
   #eventsHandler;
   #activeModals;
   #focusHandler;
-  #debug
+  #debug;
 
   constructor() {
     if (ModalHandler.instance) return ModalHandler.instance;
@@ -192,10 +192,10 @@ export default class ModalHandler {
       document.body.addEventListener('keydown', escapeKeyHandler);
       
       if (modalLmOuterLimits) {
-        document.body.addEventListener('click', outsideClickHandler)
+        document.body.addEventListener('click', outsideClickHandler);
       }
       if (modalLm) {
-        modalLm.addEventListener('keydown', trapFocusHandler)
+        modalLm.addEventListener('keydown', trapFocusHandler);
       }
       if (closeLms && Array.isArray(closeLms)) {
         closeLms.forEach(closeLm => {
