@@ -79,8 +79,8 @@ export default class ModalHandler {
     this.#activeModals.push(modalKey);
 
     if (this.#debug) {
-      console.warn(`[ModalHandler][DEBUG]: Register modal with key => "${modalKey}"`);
-      console.warn('[ModalHandler][DEBUG]: Active modal stack => ', this.#activeModals);
+      console.log(`[ModalHandler][DEBUG]: Register modal with key => "${modalKey}"`);
+      console.log('[ModalHandler][DEBUG]: Active modal stack => ', this.#activeModals);
     }
 
     return true;
@@ -93,14 +93,14 @@ export default class ModalHandler {
     }
 
     if (this.#debug) {
-      console.warn('[ModalHandler][DEBUG]: Active modal stack before filtering => ', this.#activeModals);
+      console.log('[ModalHandler][DEBUG]: Active modal stack before filtering => ', this.#activeModals);
     }
 
     this.#activeModals = this.#activeModals.filter(key => key !== modalKey);
 
     if (this.#debug) {
-      console.warn(`[ModalHandler][DEBUG]: Unregister modal with key => "${modalKey}"`);
-      console.warn('[ModalHandler][DEBUG]: Active modal stack after filtering => ', this.#activeModals);
+      console.log(`[ModalHandler][DEBUG]: Unregister modal with key => "${modalKey}"`);
+      console.log('[ModalHandler][DEBUG]: Active modal stack after filtering => ', this.#activeModals);
     }
 
     return true;
@@ -136,7 +136,7 @@ export default class ModalHandler {
       if (!this.#isActiveModal(modalKey)) return;
 
       if (this.#debug) {
-        console.warn(`[ModalHandler][DEBUG]: Close modal with key => "${modalKey}"`);
+        console.log(`[ModalHandler][DEBUG]: Close modal with key => "${modalKey}"`);
       }
 
       closeHandler(); // Only close if this is the topmost modal
@@ -147,6 +147,10 @@ export default class ModalHandler {
     const documentBodyEvents = this.#eventsHandler.documentBody;
 
     if (documentBodyEvents) {
+      if (this.#debug) {
+        console.log('[ModalHandler][DEBUG]: Stored document body events before clearing => ', documentBodyEvents);
+      }
+
       for (const key in documentBodyEvents) {
         const events = documentBodyEvents[key];
 
@@ -156,16 +160,48 @@ export default class ModalHandler {
 
         events.length = 0;
       }
+
+      if (this.#debug) {
+        console.log('[ModalHandler][DEBUG]: Stored document body events after clearing => ', documentBodyEvents);
+      }
+    } 
+    else {
+      if (this.#debug) {
+        console.log('[ModalHandler][DEBUG]: No document body events were found to be cleared.');
+      }
     }
   }
 
   clearActiveModals() {
+    if (this.#debug) {
+      console.log('[ModalHandler][DEBUG]: Active modal stack before clearing => ', this.#activeModals);
+    }
+
     this.#activeModals.length = 0;
+
+    if (this.#debug) {
+      console.log('[ModalHandler][DEBUG]: Active modal stack after clearing => ', this.#activeModals);
+    }
+  }
+
+  clearFocusRegistry() {
+    if (this.#debug) {
+      console.log('[ModalHandler][DEBUG]: Focus registry before clearing => ', this.#focusHandler);
+    }
+
+    for (const key in this.#focusHandler) {
+      delete this.#focusHandler[key];
+    }
+
+    if (this.#debug) {
+      console.log('[ModalHandler][DEBUG]: Focus registry after clearing => ', this.#focusHandler);
+    }
   }
 
   reset() {
     this.clearDocumentBodyEvents();
     this.clearActiveModals();
+    this.clearFocusRegistry();
   }
 
   addA11yEvents({

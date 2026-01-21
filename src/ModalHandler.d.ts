@@ -7,6 +7,8 @@ export default class ModalHandler {
 
     clearActiveModals(): void;
 
+    clearFocusRegistry(): void;
+
     reset(): void;
 
     addA11yEvents(options: {
