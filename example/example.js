@@ -15,7 +15,7 @@ const firstModalFocusableLm = document.getElementById('first-modal__close-btn');
 const firstModalAcceptBtn = document.getElementById('first-modal__accept-btn');
 
 // Second modal close timeout ID
-let secondModalCLoseTimId
+let secondModalCLoseTimId;
 
 // Second modal DOM references
 const secondModalContainerLm = document.getElementById('second-modal');
@@ -33,9 +33,9 @@ function showModal({
   closeModalTimId, 
   modalKey
 }) {
-  clearTimeout(closeModalTimId)
- 
-  document.body.style.overflow = 'hidden'
+  clearTimeout(closeModalTimId);
+  
+  document.body.style.overflow = 'hidden';
   modalContainerLm.style.display = 'flex';
 
   modalHandler.addFocus({
@@ -73,7 +73,6 @@ function hideModal({
 }
 
 function closeFirstModal() {
-  console.warn('CLOSE FIRST MODAL!')
   // Hide modal and store the close timeout id to able to clear it if needed
   firstModalCloseTimId = hideModal({
     modalContainerLm: firstModalContainerLm, 
@@ -94,9 +93,8 @@ function closeFirstModal() {
 }
 
 function openFirstModal(e) {
-  console.warn('OPEN FIRST MODAL!')
   // Stop event propagation to make sure no events are called on bubbling
-  e.stopPropagation()
+  e.stopPropagation();
   // Show modal
   showModal({
     modalContainerLm: firstModalContainerLm, 
@@ -121,7 +119,6 @@ function openFirstModal(e) {
 }
 
 function closeSecondModal() {
-  console.warn('CLOSE SECOND MODAL!')
   // Hide modal and store the close timeout id to able to clear it if needed
   secondModalCLoseTimId = hideModal({
     modalContainerLm: secondModalContainerLm, 
@@ -139,7 +136,6 @@ function closeSecondModal() {
 }
 
 function openSecondModal(e) {
-  console.warn('OPEN SECOND MODAL!')
   // Stop event propagation to make sure no events are called on bubbling
   e.stopPropagation();
   // Show modal
