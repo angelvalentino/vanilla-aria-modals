@@ -8,7 +8,7 @@ Although designed primarily for modal interactions, it can be used in any UI log
 
 It supports a dynamic number of modals and events. In SPAs or dynamic interfaces, navigating away or re-rendering a component without closing a modal can leave lingering event listeners on `document.body`, which may interfere with future interactions. A reset method is provided to call on route changes or component unmounts. See more at: [SPA / Advanced Usage](#spa--advanced-usage)
 
-`ModalHandler` is written in vanilla JS for full flexibility. You can modify it directly in `node_modules` if needed. Just update the `.d.ts` file when changing public methods to keep IntelliSense accurate. Internals documentation, such as architecture and logic flow can be found at:
+`ModalHandler` is written in vanilla JS for full flexibility. You can modify it directly in `node_modules` if needed. Just update the `.d.ts` file when changing public methods to keep IntelliSense accurate. Internals documentation, such as architecture and logic flow can be found [here](https://github.com/angelvalentino/vanilla-aria-modals/blob/main/docs/architecture.md).
 
 ## Set up
 
@@ -25,7 +25,7 @@ TypeScript types are used in the **docs** and in the **.d.ts** file to indicate 
 
 ## Usage
 
-A fully detailed example can be found at https://github.com/angelvalentino/vanilla-aria-modals/tree/main/example
+A fully detailed example including the necessary JavaScript, HTML, and CSS files, can be found [here](https://github.com/angelvalentino/vanilla-aria-modals/tree/main/example).
 
 **Note:** `lm` in the code stands for *HTMLElement*.
 **Note:** `e.stopPropagation()` prevents other click events (like overlay clicks) from triggering while opening a modal. This can happen because when adding the open modal event, the ARIA events are also added during propagation and can trigger the overlay click event. It is already managed via the class with a timeout, but it is better for robustness to stop propagation here as well if bubbling is not needed in that instance.
