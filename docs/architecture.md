@@ -5,7 +5,7 @@
 This document describes the internal architecture of `ModalHandler`, including private methods, data structures, and the overall logic flow. It is intended for developers who want to understand the inner workings of the class, customize it, or troubleshoot advanced issues.  
 
 > **Note:** This document does not replace reading the actual code. Many internal behaviors rely on private methods and closures, which are essential to understand before making any modifications. 
-❗ Modifications to the public API of the class should be accompanied by updates to the corresponding **.d.ts** file to ensure accurate IntelliSense.
+💾 Modifications to the public API of the class should be accompanied by updates to the corresponding **.d.ts** file to ensure accurate IntelliSense.
 
 `ModalHandler` handles modal stacking, focus management, ARIA event registration, and restoration. Internally, it uses private properties and methods to manage:  
 
