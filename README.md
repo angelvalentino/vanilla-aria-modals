@@ -21,6 +21,8 @@ const modalHandler = new ModalHandler();
 
 TypeScript types are used in the **docs** and in the **.d.ts** file to indicate the intended type and optionality of parameters, even though the class is fully vanilla JavaScript. This makes it easier to use, manage, and understand, without requiring any compiler.
 
+<br>
+
 ## Usage
 
 A fully detailed example can be found at https://github.com/angelvalentino/vanilla-aria-modals/tree/main/example
@@ -84,6 +86,8 @@ const openModalBtn = document.getElementById('open-modal-btn');
 openModalBtn.addEventListener('click', openModal);
 ```
 
+<br>
+
 ## SPA / Advanced Usage
 
 In Single Page Applications (SPA) or frameworks like React, Vue, or vanilla JS with dynamic content, modals may persist across view changes. To prevent lingering events or broken focus, `ModalHandler` provides cleanup methods.
@@ -102,6 +106,7 @@ function onRouteChange() {
   // modalHandler.clearFocusRegistry();
 }
 ```
+<br>
 
 ## Public API Methods
 
@@ -171,22 +176,22 @@ Restores focus to the element that was active before the modal opened.
 
 Returns `void`
 
-## clearDocumentBodyEvents():
+### clearDocumentBodyEvents()
 Clears any leftover document body event listeners.
 
 Returns `void`
 
-## clearActiveModals():
+### clearActiveModals()
 Resets the active modal stack.
 
 Returns `void`
 
-## clearFocusRegistry():
+### clearFocusRegistry()
 Clears stored focus references.
 
 Returns `void`
 
-## reset():
+### reset()
 Combines **clearDocumentBodyEvents()**, **clearActiveModals()**, **clearFocusRegistry()** for a full cleanup.
 
 Returns `void`
