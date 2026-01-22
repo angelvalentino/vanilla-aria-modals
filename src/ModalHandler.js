@@ -18,6 +18,47 @@ export default class ModalHandler {
     console.info(`[ModalHandler]: Debug mode ${this.#debug ? 'ON' : 'OFF'}`);
   }
 
+  #isActiveModal(modalKey) {
+    const modals = this.#activeModals;
+    return modals.length && modals[modals.length - 1] === modalKey;
+  }
+
+  #registerModal(modalKey) {
+    if (this.#activeModals.includes(modalKey)) {
+      console.warn(`[ModalHandler]: Modal with key "${modalKey}" is already registered. Skipping.`);
+      return false;
+    }
+
+    this.#activeModals.push(modalKey);
+
+    if (this.#debug) {
+      console.log(`[ModalHandler][DEBUG]: Register modal with key => "${modalKey}"`);
+      console.log('[ModalHandler][DEBUG]: Active modal stack => ', this.#activeModals);
+    }
+
+    return true;
+  }
+  
+  #unregisterModal(modalKey) {
+    if (!this.#activeModals.includes(modalKey)) {
+      console.warn(`[ModalHandler]: Modal with key "${modalKey}" was not registered. Nothing to remove.`);
+      return false;
+    }
+
+    if (this.#debug) {
+      console.log('[ModalHandler][DEBUG]: Active modal stack before filtering => ', this.#activeModals);
+    }
+
+    this.#activeModals = this.#activeModals.filter(key => key !== modalKey);
+
+    if (this.#debug) {
+      console.log(`[ModalHandler][DEBUG]: Unregister modal with key => "${modalKey}"`);
+      console.log('[ModalHandler][DEBUG]: Active modal stack after filtering => ', this.#activeModals);
+    }
+
+    return true;
+  }
+
   #trapFocus(e, element) {
     // Select all focusable elements within the given element
     const focusableLms = element.querySelectorAll(`
@@ -68,47 +109,6 @@ export default class ModalHandler {
         closeHandler(e);
       }
     }
-  }
-
-  #registerModal(modalKey) {
-    if (this.#activeModals.includes(modalKey)) {
-      console.warn(`[ModalHandler]: Modal with key "${modalKey}" is already registered. Skipping.`);
-      return false;
-    }
-
-    this.#activeModals.push(modalKey);
-
-    if (this.#debug) {
-      console.log(`[ModalHandler][DEBUG]: Register modal with key => "${modalKey}"`);
-      console.log('[ModalHandler][DEBUG]: Active modal stack => ', this.#activeModals);
-    }
-
-    return true;
-  }
-  
-  #unregisterModal(modalKey) {
-    if (!this.#activeModals.includes(modalKey)) {
-      console.warn(`[ModalHandler]: Modal with key "${modalKey}" was not registered. Nothing to remove.`);
-      return false;
-    }
-
-    if (this.#debug) {
-      console.log('[ModalHandler][DEBUG]: Active modal stack before filtering => ', this.#activeModals);
-    }
-
-    this.#activeModals = this.#activeModals.filter(key => key !== modalKey);
-
-    if (this.#debug) {
-      console.log(`[ModalHandler][DEBUG]: Unregister modal with key => "${modalKey}"`);
-      console.log('[ModalHandler][DEBUG]: Active modal stack after filtering => ', this.#activeModals);
-    }
-
-    return true;
-  }
-  
-  #isActiveModal(modalKey) {
-    const modals = this.#activeModals;
-    return modals.length && modals[modals.length - 1] === modalKey;
   }
 
   #handleOutsideClickClose(closeHandler, modalLmOuterLimits, exemptLms = []) {
@@ -307,7 +307,7 @@ export default class ModalHandler {
     lastFocusedLm = null, 
     auto = true
   }) {
-    if (Object.hasOwn(this.#focusHandler, modalKey)) {
+    if (auto && Object.hasOwn(this.#focusHandler, modalKey)) {
       console.warn(`[ModalHandler]: Duplicate focus registration for modal "${modalKey}"`);
       return;
     }
@@ -328,7 +328,7 @@ export default class ModalHandler {
     lastFocusedLm = null, 
     auto = true
   }) {
-    if (!Object.hasOwn(this.#focusHandler, modalKey)) {
+    if (auto && !Object.hasOwn(this.#focusHandler, modalKey)) {
       console.warn(`[ModalHandler]: No stored focus for modal "${modalKey}" to restore.`);
       return;
     }
