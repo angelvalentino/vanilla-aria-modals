@@ -1,7 +1,7 @@
 {
   "name": "vanilla-aria-modals",
   "version": "1.0.0",
-  "description": "Framework-agnostic accessible vanilla JavaScript modal event manager for focus trapping, keyboard interaction, outside click handling and stacked modals.",
+  "description": "Framework-agnostic utility for managing accessibility in modals or modal-like UIs, including modal stacking, focus management, and closing via Escape key or outside click.",
   "main": "src/ModalHandler.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

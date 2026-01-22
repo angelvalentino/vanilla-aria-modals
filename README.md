@@ -2,7 +2,7 @@
 
 ## Introduction
 
-`ModalHandler` is a framework-agnostic utility to manage A11y events for modals or modal-like UIs in your web application. It handles modal stacking, accessibility (focus trapping, Escape key, outside click), and focus restoration.
+`ModalHandler` is a framework-agnostic utility for managing accessibility (A11y) events in modals or modal-like UIs within your web application. It supports modal stacking and key accessibility features, including focus trapping, focus management, and closing modals with the Escape key or an outside click.
 
 Although designed primarily for modal interactions, it can be used in any UI logic that requires basic ARIA support and focus management.
 
