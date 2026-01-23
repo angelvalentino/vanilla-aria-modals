@@ -13,7 +13,7 @@ It supports a dynamic number of modals and events. In SPAs or dynamic interfaces
 ## Set up
 
 ```js
-import ModalHandler from './ModalHandler';
+import ModalHandler from 'vanilla-aria-modals';
 const modalHandler = new ModalHandler();
 ```
 
