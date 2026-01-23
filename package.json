@@ -1,6 +1,6 @@
 {
   "name": "vanilla-aria-modals",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Framework-agnostic utility for managing accessibility in modals or modal-like UIs, including modal stacking, focus management, and closing via Escape key or outside click.",
   "main": "src/ModalHandler.js",
   "scripts": {
