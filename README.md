@@ -28,6 +28,7 @@ TypeScript types are used in the **docs** and in the **.d.ts** file to indicate 
 A fully detailed example including the necessary JavaScript, HTML, and CSS files, can be found [here](https://github.com/angelvalentino/vanilla-aria-modals/tree/main/example).
 
 **Note:** `lm` in the code stands for *HTMLElement*.
+
 **Note:** `e.stopPropagation()` prevents other click events (like overlay clicks) from triggering while opening a modal. This can happen because when adding the open modal event, the ARIA events are also added during propagation and can trigger the overlay click event. It is already managed via the class with a timeout, but it is better for robustness to stop propagation here as well if bubbling is not needed in that instance.
 
 ```js
