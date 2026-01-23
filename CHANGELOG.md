@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.2] - 2026-01-23
+### Added
+- Updated `package.json` keywords to improve discoverability and better reflect modal and accessibility features.
+
 ## [1.0.1] - 2026-01-23
 ### Fixed
 - Updated installation instructions for README
