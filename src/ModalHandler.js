@@ -3,6 +3,7 @@ export default class ModalHandler {
   #activeModals;
   #focusHandler;
   #debug;
+  #modalIdCounter
 
   constructor() {
     if (ModalHandler.instance) return ModalHandler.instance;
@@ -11,6 +12,7 @@ export default class ModalHandler {
     this.#activeModals = [];
     this.#focusHandler = {};
     this.#debug = false;
+    this.#modalIdCounter = 0;
   }
 
   setDebug(bool) {
@@ -54,6 +56,11 @@ export default class ModalHandler {
     if (this.#debug) {
       console.log(`[ModalHandler][DEBUG]: Unregister modal with key => "${modalKey}"`);
       console.log('[ModalHandler][DEBUG]: Active modal stack after filtering => ', this.#activeModals);
+    }
+
+    if (this.#activeModals.length === 0) {
+      if (this.#debug) console.log('[ModalHandler][DEBUG]: Active modal stack is now empty.');
+      this.resetKeys();
     }
 
     return true;
@@ -202,6 +209,16 @@ export default class ModalHandler {
     this.clearDocumentBodyEvents();
     this.clearActiveModals();
     this.clearFocusRegistry();
+    this.resetKeys();
+  }
+
+  generateKey(prefix = 'modal') {
+    this.#modalIdCounter = (this.#modalIdCounter || 0) + 1;
+    return `${prefix}-${this.#modalIdCounter}`;
+  }
+
+  resetKeys() {
+    this.#modalIdCounter = 0;
   }
 
   addA11yEvents({
@@ -212,24 +229,24 @@ export default class ModalHandler {
     exemptLms = [],
     closeHandler
   }) {
+    // Register modal key and skip if already registered
+    const isNew = this.#registerModal(modalKey);
+    if (!isNew) return;
+
+    // Register event handlers reference
+    const handleActiveModalClose = this.#handleActiveModalClose(modalKey, closeHandler);
+    const escapeKeyHandler = this.#handleEscapeKeyClose(handleActiveModalClose);
+
+    // Ensure storage for this modal exists
+    if (!this.#eventsHandler[modalKey]) this.#eventsHandler[modalKey] = [];
+    if (!this.#eventsHandler.documentBody) this.#eventsHandler.documentBody = {};
+    if (!this.#eventsHandler.documentBody[modalKey]) this.#eventsHandler.documentBody[modalKey] = [];
+    
+    const eventsHandler = this.#eventsHandler[modalKey];
+    const documentEvents = this.#eventsHandler.documentBody[modalKey];
+
     // Extra guard to protect against event bubbling after modal open
     setTimeout(() => {
-      // Register modal key and skip if already registered
-      const isNew = this.#registerModal(modalKey);
-      if (!isNew) return;
-
-      // Register event handlers reference
-      const handleActiveModalClose = this.#handleActiveModalClose(modalKey, closeHandler);
-      const escapeKeyHandler = this.#handleEscapeKeyClose(handleActiveModalClose);
-
-      // Ensure storage for this modal exists
-      if (!this.#eventsHandler[modalKey]) this.#eventsHandler[modalKey] = [];
-      if (!this.#eventsHandler.documentBody) this.#eventsHandler.documentBody = {};
-      if (!this.#eventsHandler.documentBody[modalKey]) this.#eventsHandler.documentBody[modalKey] = [];
-      
-      const eventsHandler = this.#eventsHandler[modalKey];
-      const documentEvents = this.#eventsHandler.documentBody[modalKey];
-
       // Attach event listeners
       document.body.addEventListener('keydown', escapeKeyHandler);
       eventsHandler.push({ eventName: 'keydown', callback: escapeKeyHandler });

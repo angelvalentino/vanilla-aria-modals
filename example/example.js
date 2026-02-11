@@ -72,29 +72,31 @@ function hideModal({
   return closeModalTimId;
 }
 
-function closeFirstModal() {
-  // Hide modal and store the close timeout id to able to clear it if needed
-  firstModalCloseTimId = hideModal({
-    modalContainerLm: firstModalContainerLm, 
-    modalContentLm: firstModalContentLm, 
-    modalOverlayLm: firstModalOverlayLm, 
-    modalKey: 'firstModal'
-  });
-
-  // Remove open additional modal event
-  firstModalAcceptBtn.removeEventListener('click', openSecondModal);
-
-  // Remove ARIA event listeners
-  modalHandler.removeA11yEvents({
-    modalKey: 'firstModal',
-    modalLm: firstModalContentLm,
-    closeLms: firstModalCloseBtns
-  });
-}
-
 function openFirstModal(e) {
   // Stop event propagation to make sure no events are called on bubbling
   e.stopPropagation();
+  const modalKey = modalHandler.generateKey();
+
+  function closeFirstModal() {
+    // Hide modal and store the close timeout id to able to clear it if needed
+    firstModalCloseTimId = hideModal({
+      modalContainerLm: firstModalContainerLm, 
+      modalContentLm: firstModalContentLm, 
+      modalOverlayLm: firstModalOverlayLm, 
+      modalKey: modalKey
+    });
+
+    // Remove open additional modal event
+    firstModalAcceptBtn.removeEventListener('click', openSecondModal);
+
+    // Remove ARIA event listeners
+    modalHandler.removeA11yEvents({
+      modalKey: modalKey,
+      modalLm: firstModalContentLm,
+      closeLms: firstModalCloseBtns
+    });
+  }
+
   // Show modal
   showModal({
     modalContainerLm: firstModalContainerLm, 
@@ -102,7 +104,7 @@ function openFirstModal(e) {
     modalOverlayLm: firstModalOverlayLm,
     firstFocusableLm: firstModalFocusableLm,
     closeModalTimId: firstModalCloseTimId, 
-    modalKey: 'firstModal'
+    modalKey: modalKey
   });
 
   // Add open additional modal event
@@ -110,7 +112,7 @@ function openFirstModal(e) {
 
   // Add ARIA event listeners
   modalHandler.addA11yEvents({
-    modalKey: 'firstModal',
+    modalKey: modalKey,
     modalLm: firstModalContentLm,
     modalLmOuterLimits: firstModalContentLm,
     closeLms: firstModalCloseBtns,
@@ -118,26 +120,28 @@ function openFirstModal(e) {
   });
 }
 
-function closeSecondModal() {
-  // Hide modal and store the close timeout id to able to clear it if needed
-  secondModalCLoseTimId = hideModal({
-    modalContainerLm: secondModalContainerLm, 
-    modalContentLm: secondModalContentLm, 
-    modalOverlayLm: secondModalOverlayLm,
-    modalKey: 'secondModal'
-  });
-
-  // Remove ARIA event listeners
-  modalHandler.removeA11yEvents({
-    modalKey: 'secondModal',
-    modalLm: secondModalContentLm,
-    closeLms: secondModalCloseBtns
-  });
-}
-
 function openSecondModal(e) {
   // Stop event propagation to make sure no events are called on bubbling
   e.stopPropagation();
+  const modalKey = modalHandler.generateKey();
+
+  function closeSecondModal() {
+    // Hide modal and store the close timeout id to able to clear it if needed
+    secondModalCLoseTimId = hideModal({
+      modalContainerLm: secondModalContainerLm, 
+      modalContentLm: secondModalContentLm, 
+      modalOverlayLm: secondModalOverlayLm,
+      modalKey: modalKey
+    });
+
+    // Remove ARIA event listeners
+    modalHandler.removeA11yEvents({
+      modalKey: modalKey,
+      modalLm: secondModalContentLm,
+      closeLms: secondModalCloseBtns
+    });
+  }
+
   // Show modal
   showModal({
     modalContainerLm: secondModalContainerLm, 
@@ -145,12 +149,12 @@ function openSecondModal(e) {
     modalOverlayLm: secondModalOverlayLm, 
     firstFocusableLm: secondModalFocusableLm, 
     closeModalTimId: secondModalCLoseTimId, 
-    modalKey: 'secondModal'
+    modalKey: modalKey
   });
 
   // Add ARIA event listeners
   modalHandler.addA11yEvents({
-    modalKey: 'secondModal',
+    modalKey: modalKey,
     modalLm: secondModalContentLm,
     modalLmOuterLimits: secondModalContentLm,
     closeLms: secondModalCloseBtns,

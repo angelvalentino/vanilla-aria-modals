@@ -11,6 +11,10 @@ export default class ModalHandler {
 
     reset(): void;
 
+    generateKey(prefix?: string): string;
+
+    resetKeys(): void;
+
     addA11yEvents(options: {
       modalKey: string;
       modalLm?: HTMLElement | null;
