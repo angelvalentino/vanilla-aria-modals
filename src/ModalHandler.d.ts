@@ -26,8 +26,6 @@ export default class ModalHandler {
 
     removeA11yEvents(options: {
       modalKey: string;
-      modalLm?: HTMLElement | null;
-      closeLms?: HTMLElement[] | null;
     }): void;
 
     addFocus(options: {
