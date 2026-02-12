@@ -15,6 +15,8 @@ export default class ModalHandler {
 
     resetKeys(): void;
 
+    rebindTrapFocus(modalKey: string): void;
+
     addA11yEvents(options: {
       modalKey: string;
       modalLm?: HTMLElement | null;

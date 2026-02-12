@@ -226,6 +226,15 @@ export default class ModalHandler {
     this.#modalIdCounter = 0;
   }
 
+  rebindTrapFocus(modalKey) {
+    const eventsHandler = this.#eventsHandler[modalKey];
+    const trapFocusHandler = eventsHandler.find(hander => hander.isTrapFocusHandler === true);
+    const { lm, eventName, callback } = trapFocusHandler;
+
+    lm.removeEventListener(eventName, callback);
+    lm.addEventListener(eventName, callback);
+  }
+
   addA11yEvents({
     modalKey,
     modalLm = null, 
