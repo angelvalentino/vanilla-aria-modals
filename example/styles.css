@@ -121,7 +121,9 @@ button {
 }
 
 .first-modal__accept-btn,
-.second-modal__accept-btn {
+.second-modal__accept-btn,
+.first-modal__toggle-btn,
+.first-modal__disabled-btn {
   padding: 12px;
   border-radius: 3px;
   cursor: pointer;
@@ -131,10 +133,34 @@ button {
   transition: background-color 0.15s;
 }
 
+.first-modal__toggle-btn-container {
+  display: flex;
+  margin-top: 10px;
+}
+
 .second-modal__accept-btn {
   display: block;
   width: 30%;
   margin: 0 auto;
+}
+
+.first-modal__disabled-btn:disabled {
+  background-color: rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+}
+
+.first-modal__toggle-btn,
+.first-modal__disabled-btn {
+  flex: 1;
+
+}
+
+.first-modal__toggle-btn {
+  border-radius: 3px 0px 0px 3px;
+}
+
+.first-modal__disabled-btn {
+  border-radius: 0px 3px 3px 0px;
 }
 
 @media screen and (pointer: fine) and (hover: hover) { 

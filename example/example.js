@@ -13,6 +13,7 @@ const firstModalOverlayLm = document.getElementById('first-modal__overlay');
 const firstModalCloseBtns = [...firstModalContentLm.querySelectorAll('.close-first-modal-btn')];
 const firstModalFocusableLm = document.getElementById('first-modal__close-btn');
 const firstModalAcceptBtn = document.getElementById('first-modal__accept-btn');
+const firstModalToggleBtn = document.getElementById('first-modal__toggle-btn');
 
 // Second modal close timeout ID
 let secondModalCLoseTimId;
@@ -72,12 +73,16 @@ function hideModal({
   return closeModalTimId;
 }
 
-function openFirstModal(e) {
-  // Stop event propagation to make sure no events are called on bubbling
-  e.stopPropagation();
+function openFirstModal() {
   const modalKey = modalHandler.generateKey();
 
-  function closeFirstModal() {
+  const toggleDisabled = e => {
+    const disabledBtn = e.target.nextElementSibling;
+    disabledBtn.disabled = !disabledBtn.disabled;
+    disabledBtn.textContent = disabledBtn.disabled ? 'Disabled...' : 'Enabled!';
+  }
+
+  const closeFirstModal = () => {
     // Hide modal and store the close timeout id to able to clear it if needed
     firstModalCloseTimId = hideModal({
       modalContainerLm: firstModalContainerLm, 
@@ -88,6 +93,9 @@ function openFirstModal(e) {
 
     // Remove open additional modal event
     firstModalAcceptBtn.removeEventListener('click', openSecondModal);
+
+    // Remove toggle disabled btn logic
+    firstModalToggleBtn.removeEventListener('click', toggleDisabled);
 
     // Remove ARIA event listeners
     modalHandler.removeA11yEvents({
@@ -110,6 +118,9 @@ function openFirstModal(e) {
   // Add open additional modal event
   firstModalAcceptBtn.addEventListener('click', openSecondModal);
 
+  // Add toggle disabled btn logic
+  firstModalToggleBtn.addEventListener('click', toggleDisabled);
+
   // Add ARIA event listeners
   modalHandler.addA11yEvents({
     modalKey: modalKey,
@@ -120,12 +131,10 @@ function openFirstModal(e) {
   });
 }
 
-function openSecondModal(e) {
-  // Stop event propagation to make sure no events are called on bubbling
-  e.stopPropagation();
+function openSecondModal() {
   const modalKey = modalHandler.generateKey();
 
-  function closeSecondModal() {
+  const closeSecondModal = () => {
     // Hide modal and store the close timeout id to able to clear it if needed
     secondModalCLoseTimId = hideModal({
       modalContainerLm: secondModalContainerLm, 
