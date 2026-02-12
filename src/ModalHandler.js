@@ -138,8 +138,7 @@ export default class ModalHandler {
   }
 
   #handleActiveModalClose(modalKey, closeHandler) {
-    return e => {
-      e.stopPropagation();
+    return () => {
       if (!this.#isActiveModal(modalKey)) return;
 
       if (this.#debug) {

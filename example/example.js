@@ -99,9 +99,7 @@ function openFirstModal() {
 
     // Remove ARIA event listeners
     modalHandler.removeA11yEvents({
-      modalKey: modalKey,
-      modalLm: firstModalContentLm,
-      closeLms: firstModalCloseBtns
+      modalKey: modalKey
     });
   }
 
@@ -145,9 +143,7 @@ function openSecondModal() {
 
     // Remove ARIA event listeners
     modalHandler.removeA11yEvents({
-      modalKey: modalKey,
-      modalLm: secondModalContentLm,
-      closeLms: secondModalCloseBtns
+      modalKey: modalKey
     });
   }
 
