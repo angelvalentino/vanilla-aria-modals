@@ -307,8 +307,16 @@ export default class ModalHandler {
   }
 
   removeA11yEvents({
-    modalKey
+    modalKey,
+    isToggle,
   }) {
+    if (isToggle) {
+      const removed = this.#unregisterModal(modalKey, isToggle);
+      if (this.#debug && removed) {
+        console.log('[ModalHandler][DEBUG]: Overlayless modal not triggered on close; removed via event cleanup.');
+      }
+    }
+
     const eventsHandler = this.#eventsHandler[modalKey];
 
     // Event clean up

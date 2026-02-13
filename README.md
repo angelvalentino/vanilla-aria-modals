@@ -29,8 +29,6 @@ A fully detailed example including the necessary JavaScript, HTML, and CSS files
 
 **Note:** `lm` in the code stands for *HTMLElement*.
 
-**Note:** `e.stopPropagation()` prevents other click events (like overlay clicks) from triggering while opening a modal. This can happen because when adding the open modal event, the ARIA events are also added during propagation and can trigger the overlay click event. It is already managed via the class with a timeout, but it is better for robustness to stop propagation here as well if bubbling is not needed in that instance.
-
 ```js
 // Basic example of showing a modal
 showModal() {
@@ -42,27 +40,19 @@ hideModal() {
   modalContainerLm.style.display = 'none';
 }
 
-closeModal() {
-  hideModal();
-  // ...Your hide UI logic
-
-  // Restore focus
-  modalHandler.restoreFocus({
-    modalKey: 'myModal'
-  });
-
-  // Remove ARIA events added
-  modalHandler.removeA11yEvents({
-    modalKey: 'myModal',
-    modalLm: modalContentLm,
-    closeLms: [...modalCloseBtns]
-  });
-}
 
 
-openModal(e) {
-  // Stop event propagation to make sure no events are called on bubbling
-  e.stopPropagation();
+openModal() {
+  const closeModal = () => {
+    hideModal();
+    // ...Your hide UI logic
+
+    // Restore focus
+    modalHandler.restoreFocus({ modalKey: 'myModal' });
+
+    // Remove ARIA events added
+    modalHandler.removeA11yEvents({ modalKey: 'myModal' });
+  }
 
   showModal();
   // ...Your show UI logic

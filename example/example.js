@@ -216,9 +216,9 @@ function generatePopup(className) {
     } 
     else {
       // remove aria events
-      modalHandler.removeA11yEvents({ modalKey: className });
+      modalHandler.removeA11yEvents({ modalKey: className, isToggle: true });
     }
-    });
+  });
 
   // Insert the button after the last element inside main
   main.appendChild(popupBtn);
