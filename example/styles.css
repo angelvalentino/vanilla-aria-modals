@@ -43,7 +43,7 @@ button {
 }
 
 .second-modal {
-  z-index: 20;
+  z-index: 30;
 }
 
 .first-modal__overlay,
@@ -152,7 +152,6 @@ button {
 .first-modal__toggle-btn,
 .first-modal__disabled-btn {
   flex: 1;
-
 }
 
 .first-modal__toggle-btn {
@@ -184,4 +183,50 @@ button {
 .first-modal__close-btn:active,
 .second-modal__close-btn:active {
   opacity: 0.7;
+}
+
+.popup__content {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.popup__close-btn  {
+  line-height: 0;
+  border: none;
+  background-color: transparent;
+  display: inline-block;
+}
+
+.popup__close-btn svg {
+  width: 1.7rem;
+}
+
+.popup {
+  position: fixed;
+  bottom: 40px;
+  border-radius: 12px;
+  box-shadow: 0px 0px 30px -6px rgba(0, 0, 0, 0.08);  padding: 10px 10px;
+  right: -500px;
+  transition: right 0.25s;
+}
+
+.popup.active {
+  right: 30px;
+}
+
+.popup__text {
+  font-size: 1.1rem;
+}
+
+.open-popup-btn {
+  padding: 15px;
+  cursor: pointer;
+  margin-bottom: 50px;
+  margin-left: 5px;
+  border: none;
+  background-color: seagreen;
+  color: #fff;
+  border-radius: 3px;
+  transition: background-color 0.15s;
 }

@@ -25,6 +25,9 @@ const secondModalOverlayLm = document.getElementById('second-modal__overlay');
 const secondModalCloseBtns = [...secondModalContentLm.querySelectorAll('.close-second-modal-btn')];
 const secondModalFocusableLm = document.getElementById('second-modal__close-btn');
 
+// Popup bottom margin variable
+let lastPopupBottom = 40;
+
 // Rusable show UI modal function
 function showModal({
   modalContainerLm,
@@ -98,9 +101,7 @@ function openFirstModal() {
     firstModalToggleBtn.removeEventListener('click', toggleDisabled);
 
     // Remove ARIA event listeners
-    modalHandler.removeA11yEvents({
-      modalKey: modalKey
-    });
+    modalHandler.removeA11yEvents({ modalKey: modalKey });
   }
 
   // Show modal
@@ -142,9 +143,7 @@ function openSecondModal() {
     });
 
     // Remove ARIA event listeners
-    modalHandler.removeA11yEvents({
-      modalKey: modalKey
-    });
+    modalHandler.removeA11yEvents({ modalKey: modalKey });
   }
 
   // Show modal
@@ -165,6 +164,68 @@ function openSecondModal() {
     closeLms: secondModalCloseBtns,
     closeHandler: closeSecondModal
   });
+}
+
+function generatePopup(className) {
+  const modalHTML = `
+    <div id="${className}" class="${className} popup">
+      <div class="${className}__content popup__content">
+        <button title="Close modal" aria-label="Close modal." id="${className}__close-btn" class="${className}__close-btn popup__close-btn">
+          <svg aria-hidden="true" focusable="false" role="presentation" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M6.4 19L5 17.6l5.6-5.6L5 6.4L6.4 5l5.6 5.6L17.6 5L19 6.4L13.4 12l5.6 5.6l-1.4 1.4l-5.6-5.6z" />
+          </svg>
+        </button>
+      <p class="${className}__text popup__text">I am a just a pop up with no overlay!</p>
+      </div>
+    </div>
+  `;
+
+  document.body.insertAdjacentHTML("afterbegin", modalHTML);
+
+  const popupLm = document.getElementById(className);
+  
+  const closePopup = () => {
+    popupLm.classList.remove("active");
+    modalHandler.removeA11yEvents({ modalKey: className });
+  };
+
+  // Set the bottom based on last popup
+  popupLm.style.bottom = lastPopupBottom + "px";
+
+  // Update lastPopupBottom for next popup
+  lastPopupBottom += popupLm.offsetHeight + 10; // 
+
+  // Now generate a button for this popup
+  const main = document.querySelector("main");
+  const popupBtn = document.createElement("button");
+  popupBtn.textContent = `toggle ${className}`;
+  popupBtn.className = "open-popup-btn";
+
+  const closeBtn = document.getElementById(`${className}__close-btn`);
+
+  popupBtn.addEventListener("click", () => {
+    const isOpen = popupLm.classList.toggle("active");
+
+    if (isOpen) {
+      // add aria events
+      modalHandler.addA11yEvents({
+        modalKey: className,
+        closeHandler: closePopup,
+        closeLms: [closeBtn]
+      });
+    } 
+    else {
+      // remove aria events
+      modalHandler.removeA11yEvents({ modalKey: className });
+    }
+    });
+
+  // Insert the button after the last element inside main
+  main.appendChild(popupBtn);
+}
+
+for (let i = 1; i <= 3; i++) {
+  generatePopup(`popup-${i}`);
 }
 
 const openModalBtn = document.getElementById('open-modal-btn');

@@ -41,7 +41,7 @@ export default class ModalHandler {
     return true;
   }
   
-  #unregisterModal(modalKey) {
+  #unregisterModal(modalKey, isOverlayLess) {
     if (!this.#activeModals.includes(modalKey)) {
       console.warn(`[ModalHandler]: Modal with key "${modalKey}" was not registered. Nothing to remove.`);
       return false;
@@ -51,7 +51,16 @@ export default class ModalHandler {
       console.log('[ModalHandler][DEBUG]: Active modal stack before filtering => ', this.#activeModals);
     }
 
-    this.#activeModals = this.#activeModals.filter(key => key !== modalKey);
+    if (isOverlayLess) {
+      if (this.#debug) {
+        console.log('[ModalHandler][DEBUG]: Overlayless modal closed ignoring stacking order.');
+      }
+
+      this.#activeModals = this.#activeModals.filter(key => key !== modalKey);
+    } 
+    else {
+      this.#activeModals.pop();
+    }
 
     if (this.#debug) {
       console.log(`[ModalHandler][DEBUG]: Unregister modal with key => "${modalKey}"`);
@@ -137,9 +146,17 @@ export default class ModalHandler {
     }
   }
 
-  #handleActiveModalClose(modalKey, closeHandler) {
-    return () => {
-      if (!this.#isActiveModal(modalKey)) return;
+  #handleActiveModalClose(modalKey, closeHandler, modalLmOuterLimits) {
+    return e => {
+      // Check if modal is overlayless and triggered by click so we can ignore stacking order later
+      const isOverlayLess = !modalLmOuterLimits && e?.type === 'click';
+
+      if (!isOverlayLess && !this.#isActiveModal(modalKey)) {
+        return;
+      }
+
+      const isRegistered = this.#unregisterModal(modalKey, isOverlayLess);
+      if (!isRegistered) return;
 
       if (this.#debug) {
         console.log(`[ModalHandler][DEBUG]: Close modal with key => "${modalKey}"`);
@@ -247,7 +264,7 @@ export default class ModalHandler {
     if (!isNew) return;
 
     // Register event handlers reference
-    const handleActiveModalClose = this.#handleActiveModalClose(modalKey, closeHandler);
+    const handleActiveModalClose = this.#handleActiveModalClose(modalKey, closeHandler, modalLmOuterLimits);
     const escapeKeyHandler = this.#handleEscapeKeyClose(handleActiveModalClose);
 
     // Ensure storage for this modal exists
@@ -292,10 +309,6 @@ export default class ModalHandler {
   removeA11yEvents({
     modalKey
   }) {
-    // Unregister modal key and skip if it wasn't registered
-    const isRegistered = this.#unregisterModal(modalKey);
-    if (!isRegistered) return;
-
     const eventsHandler = this.#eventsHandler[modalKey];
 
     // Event clean up
