@@ -127,7 +127,7 @@ export default class ModalHandler {
     }
   }
 
-  #handleOutsideClickClose(modalKey, closeHandler, modalLmOuterLimits, exemptLms, modalKey) {
+  #handleOutsideClickClose(modalKey, closeHandler, modalLmOuterLimits, exemptLms) {
     return e => {
       const clickedLm = e.target;
       
