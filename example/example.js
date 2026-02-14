@@ -3,6 +3,8 @@ import ModalHandler from "../src/ModalHandler.js";
 const modalHandler = new ModalHandler();
 modalHandler.setDebug(true);
 
+const openFirstModalBtn = document.getElementById('open-modal-btn');
+
 // First modal close timeout ID
 let firstModalCloseTimId;
 
@@ -12,7 +14,7 @@ const firstModalContentLm = document.getElementById('first-modal__content');
 const firstModalOverlayLm = document.getElementById('first-modal__overlay');
 const firstModalCloseBtns = [...firstModalContentLm.querySelectorAll('.close-first-modal-btn')];
 const firstModalFocusableLm = document.getElementById('first-modal__close-btn');
-const firstModalAcceptBtn = document.getElementById('first-modal__accept-btn');
+const firstModalMoreBtn = document.getElementById('first-modal__more-btn');
 const firstModalToggleBtn = document.getElementById('first-modal__toggle-btn');
 
 // Second modal close timeout ID
@@ -34,13 +36,15 @@ function showModal({
   modalContentLm,
   modalOverlayLm, 
   firstFocusableLm, 
-  closeModalTimId, 
+  closeModalTimId,
+  openModalBtn,
   modalKey
 }) {
   clearTimeout(closeModalTimId);
   
   document.body.style.overflow = 'hidden';
   modalContainerLm.style.display = 'flex';
+  openModalBtn.setAttribute('aria-expanded', 'true');
 
   modalHandler.addFocus({
     modalKey: modalKey,
@@ -60,17 +64,19 @@ function showModal({
 function hideModal({
   modalContainerLm, 
   modalContentLm, 
-  modalOverlayLm, 
+  modalOverlayLm,
+  openModalBtn,
   modalKey
 }) {
   document.body.style.overflow = '';
   modalContentLm.style.transform = 'scale(0)';
   modalOverlayLm.style.opacity = 0;
   modalContentLm.style.opacity = 0;
+  openModalBtn.setAttribute('aria-expanded', 'false');
 
   const closeModalTimId = setTimeout(() => {
     modalContainerLm.style.display = 'none';
-    modalHandler.restoreFocus({ modalKey: modalKey })
+    modalHandler.restoreFocus({ modalKey: modalKey });
   }, 250);
 
   return closeModalTimId;
@@ -93,11 +99,12 @@ function openFirstModal() {
       modalContainerLm: firstModalContainerLm, 
       modalContentLm: firstModalContentLm, 
       modalOverlayLm: firstModalOverlayLm, 
+      openModalBtn: openFirstModalBtn,
       modalKey: modalKey
     });
 
     // Remove open additional modal event
-    firstModalAcceptBtn.removeEventListener('click', openSecondModal);
+    firstModalMoreBtn.removeEventListener('click', openSecondModal);
 
     // Remove toggle disabled btn logic
     firstModalToggleBtn.removeEventListener('click', toggleDisabled);
@@ -112,12 +119,13 @@ function openFirstModal() {
     modalContentLm: firstModalContentLm,
     modalOverlayLm: firstModalOverlayLm,
     firstFocusableLm: firstModalFocusableLm,
-    closeModalTimId: firstModalCloseTimId, 
+    closeModalTimId: firstModalCloseTimId,
+    openModalBtn: openFirstModalBtn,
     modalKey: modalKey
   });
 
   // Add open additional modal event
-  firstModalAcceptBtn.addEventListener('click', openSecondModal);
+  firstModalMoreBtn.addEventListener('click', openSecondModal);
 
   // Add toggle disabled btn logic
   firstModalToggleBtn.addEventListener('click', toggleDisabled);
@@ -141,6 +149,7 @@ function openSecondModal() {
       modalContainerLm: secondModalContainerLm, 
       modalContentLm: secondModalContentLm, 
       modalOverlayLm: secondModalOverlayLm,
+      openModalBtn: firstModalMoreBtn,
       modalKey: modalKey
     });
 
@@ -155,6 +164,7 @@ function openSecondModal() {
     modalOverlayLm: secondModalOverlayLm, 
     firstFocusableLm: secondModalFocusableLm, 
     closeModalTimId: secondModalCloseTimId, 
+    openModalBtn: firstModalMoreBtn,
     modalKey: modalKey
   });
 
@@ -230,5 +240,4 @@ for (let i = 1; i <= 3; i++) {
   generatePopup(`popup-${i}`);
 }
 
-const openModalBtn = document.getElementById('open-modal-btn');
-openModalBtn.addEventListener('click', openFirstModal);
+openFirstModalBtn.addEventListener('click', openFirstModal);

@@ -18,6 +18,26 @@ button {
   font-size: inherit;
   font-family: inherit;
   cursor: pointer;
+  transition: opacity 0.25s;
+}
+
+.visually-hidden { 
+  border: 0;
+  padding: 0;
+  margin: 0;
+  position: absolute !important;
+  height: 1px; 
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px 1px 1px 1px); /* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
+  clip: rect(1px, 1px, 1px, 1px); /* maybe deprecated but we need to support legacy browsers */
+  clip-path: inset(50%); /* modern browsers, clip-path works inwards from each corner */
+  white-space: nowrap; /* added line to stop words getting smushed together (as they go onto seperate lines and some screen readers do not understand line feeds as a space */
+}
+
+.main-title {
+  margin-bottom: 30px;
+  font-family: monospace;
 }
 
 .open-modal-btn {
@@ -28,7 +48,7 @@ button {
   background-color: hotpink;
   color: #fff;
   border-radius: 3px;
-  transition: background-color 0.15s;
+  transition: opacity 0.15s;
 }
 
 .first-modal,
@@ -120,10 +140,7 @@ button {
   cursor: pointer;
 }
 
-.first-modal__accept-btn,
-.second-modal__accept-btn,
-.first-modal__toggle-btn,
-.first-modal__disabled-btn {
+.modal-btn {
   padding: 12px;
   border-radius: 3px;
   cursor: pointer;
@@ -160,29 +177,6 @@ button {
 
 .first-modal__disabled-btn {
   border-radius: 0px 3px 3px 0px;
-}
-
-@media screen and (pointer: fine) and (hover: hover) { 
-  .first-modal__close-btn:is(:hover, :focus-visible),
-  .second-modal__close-btn:is(:hover, :focus-visible) {
-    color: red;
-  }
-  
-  .first-modal__accept-btn:is(:hover, :focus-visible),
-  .second-modal__accept-btn:is(:hover, :focus-visible) {
-    background-color: rgb(60, 187, 149);
-  }
-}
-
-.first-modal__accept-btn:active,
-.second-modal__accept-btn:active {
-  transition: none;
-  background-color: rgb(27, 179, 133);
-}
-
-.first-modal__close-btn:active,
-.second-modal__close-btn:active {
-  opacity: 0.7;
 }
 
 .popup__content {
@@ -228,5 +222,33 @@ button {
   background-color: seagreen;
   color: #fff;
   border-radius: 3px;
-  transition: background-color 0.15s;
+  transition: opacity 0.15s;
+}
+
+@media screen and (pointer: fine) and (hover: hover) { 
+  .first-modal__close-btn:is(:hover, :focus-visible),
+  .second-modal__close-btn:is(:hover, :focus-visible) {
+    color: red;
+  }
+  
+  .modal-btn:is(:hover, :focus-visible),
+  .modal-btn:is(:hover, :focus-visible) {
+    background-color: rgb(60, 187, 149);
+  }
+
+  .open-modal-btn:is(:hover, :focus-visible),
+  .open-popup-btn:is(:hover, :focus-visible) {
+    opacity: 0.8;
+  }
+}
+
+.modal-btn:active,
+.modal-btn:active {
+  transition: none;
+  background-color: rgb(27, 179, 133);
+}
+
+.first-modal__close-btn:active,
+.second-modal__close-btn:active {
+  opacity: 0.7;
 }
