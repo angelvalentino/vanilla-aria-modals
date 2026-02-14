@@ -28,6 +28,7 @@ export default class ModalHandler {
 
     removeA11yEvents(options: {
       modalKey: string;
+      isToggle?: boolean
     }): void;
 
     addFocus(options: {

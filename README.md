@@ -27,6 +27,8 @@ TypeScript types are used in the **docs** and in the **.d.ts** file to indicate 
 
 A fully detailed example including the necessary JavaScript, HTML, and CSS files, can be found [here](https://github.com/angelvalentino/vanilla-aria-modals/tree/main/example).
 
+> **Note:** The **closeHandler** receives both the original **DOM event** and the associated **modalKey** automatically. The caller can use these to inspect the event or determine which modal triggered the close.
+
 **Note:** `lm` in the code stands for *HTMLElement*.
 
 ```js
@@ -40,18 +42,18 @@ hideModal() {
   modalContainerLm.style.display = 'none';
 }
 
-
-
 openModal() {
+  // Generate a key or use your own
+  const modalKey = modalHandler.generateKey();
+
   const closeModal = () => {
     hideModal();
     // ...Your hide UI logic
 
     // Restore focus
-    modalHandler.restoreFocus({ modalKey: 'myModal' });
-
+    modalHandler.restoreFocus({ modalKey: modalKey });
     // Remove ARIA events added
-    modalHandler.removeA11yEvents({ modalKey: 'myModal' });
+    modalHandler.removeA11yEvents({ modalKey: modalKey });
   }
 
   showModal();
@@ -59,13 +61,12 @@ openModal() {
 
   // Add focus
   modalHandler.addFocus({
-    modalKey: 'myModal',
+    modalKey: modalKey,
     firstFocusableLm: modalFirstFocusableLm
   });
-
   // Add ARIA events 
   modalHandler.addA11yEvents({
-    modalKey: 'myModal',
+    modalKey: modalKey,
     modalLm: modalContentLm,
     modalLmOuterLimits: modalContentLm,
     closeLms: [...modalCloseBtns],
@@ -88,13 +89,14 @@ In Single Page Applications (SPA) or frameworks like React, Vue, or vanilla JS w
 ```js
 // Suppose your SPA route or component changes
 function onRouteChange() {
-  // Clear leftover document events, active modals, and focus tracking
+  // Clear leftover document events, active modals, focus tracking and modal ID key counter
   modalHandler.reset();
 
   // Or individually:
   // modalHandler.clearDocumentBodyEvents();
   // modalHandler.clearActiveModals();
   // modalHandler.clearFocusRegistry();
+  // modalHandler.resetKeys();
 }
 ```
 <br>
@@ -124,7 +126,7 @@ Registers ARIA events and modal stacking handling:
 - **`modalLmOuterLimits?: HTMLElement | null;`** *(optional)* The container that defines the modal boundary. Used to detect clicks outside the modal. **modalLm** is usually used here, but depending on the UI we may not want to trap focus into the same container we want to close, maybe just in a part of it.
 - **`closeLms?: HTMLElement[] | null;`** *(optional)* Array of elements that should trigger closing the modal (e.g., close buttons).
 - **`exemptLms?: HTMLElement[];`** *(optional)* Array of elements that should not trigger closing even if clicked outside.
-- **`closeHandler: () => void;`** Function to call when the modal should close. Usually should call **removeA11yEvents()**.
+- **`closeHandler: (e: Event, modalKey: string) => void;`** Function to call when the modal should close. Usually should call **removeA11yEvents()**. Automatically receives the event **(e)** and **(modalKey)** from the wrapper; no need to pass as arguments. It’s up to the caller whether to use them.
 
 Returns `void`
 
@@ -136,8 +138,7 @@ Removes all accessibility and interaction event listeners for the specific regis
 **Takes parameters as a single object, which are destructured inside the method.**
 
 - **`modalKey: string;`** Unique modal identifier. Must match the modalKey used in **addA11yEvents()**.
-- **`modalLm?: HTMLElement | null;`** *(optional)* The main modal element. Used to be able to properly remove the trap focus event.
-- **`closeLms?: HTMLElement[] | null;`** *(optional)* Array of close elements used in **addA11yEvents()**. Used to be able to properly remove the close event from the given elements.
+- **`isToggle?: boolean;`** Optional flag to indicate that the modal (no overlay, usually popups with toggle logic) is being closed via a toggle action (outside of the usual close handler). Setting this flag to **true** ensures the modal is properly removed from the active stack, even when called outside of any closing handler.
 
 Returns `void`
 
@@ -186,3 +187,24 @@ Returns `void`
 Combines **clearDocumentBodyEvents()**, **clearActiveModals()**, **clearFocusRegistry()** for a full cleanup.
 
 Returns `void`
+
+### generateKey()
+Generates a unique identifier for the modal.
+
+- **`prefix?: string;`** Optional prefix to modify the generated modal key.
+
+Returns `string`. The generated modal key to be used later in the code.
+
+### resetKeys()
+
+Resets the internal modal key counter back to 0.
+
+Returns `void`
+
+### rebindTrapFocus()
+
+Re-attaches the focus-trapping event listener for a specific modal. The internal **trapFocus** method already queries the DOM on each keyboard event, so in most cases, manually rebinding is not necessary.
+
+- **`modalKey: string`** The unique key of the modal whose focus trap should be rebound.
+
+returns `void`

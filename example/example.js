@@ -16,7 +16,7 @@ const firstModalAcceptBtn = document.getElementById('first-modal__accept-btn');
 const firstModalToggleBtn = document.getElementById('first-modal__toggle-btn');
 
 // Second modal close timeout ID
-let secondModalCLoseTimId;
+let secondModalCloseTimId;
 
 // Second modal DOM references
 const secondModalContainerLm = document.getElementById('second-modal');
@@ -85,6 +85,8 @@ function openFirstModal() {
     disabledBtn.textContent = disabledBtn.disabled ? 'Disabled...' : 'Enabled!';
   }
 
+  // closeHandler receives the event and modalKey automatically from the wrapper.
+  // It’s up to the caller whether to use them.
   const closeFirstModal = () => {
     // Hide modal and store the close timeout id to able to clear it if needed
     firstModalCloseTimId = hideModal({
@@ -135,7 +137,7 @@ function openSecondModal() {
 
   const closeSecondModal = () => {
     // Hide modal and store the close timeout id to able to clear it if needed
-    secondModalCLoseTimId = hideModal({
+    secondModalCloseTimId = hideModal({
       modalContainerLm: secondModalContainerLm, 
       modalContentLm: secondModalContentLm, 
       modalOverlayLm: secondModalOverlayLm,
@@ -152,7 +154,7 @@ function openSecondModal() {
     modalContentLm: secondModalContentLm,
     modalOverlayLm: secondModalOverlayLm, 
     firstFocusableLm: secondModalFocusableLm, 
-    closeModalTimId: secondModalCLoseTimId, 
+    closeModalTimId: secondModalCloseTimId, 
     modalKey: modalKey
   });
 

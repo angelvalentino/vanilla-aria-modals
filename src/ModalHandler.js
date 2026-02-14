@@ -1,17 +1,17 @@
 export default class ModalHandler {
-  #eventsHandler;
-  #activeModals;
-  #focusHandler;
   #debug;
+  #eventsHandler;
+  #focusHandler;
+  #activeModals;
   #modalIdCounter
 
   constructor() {
     if (ModalHandler.instance) return ModalHandler.instance;
     ModalHandler.instance = this;
-    this.#eventsHandler = {};
-    this.#activeModals = [];
-    this.#focusHandler = {};
     this.#debug = false;
+    this.#eventsHandler = {};
+    this.#focusHandler = {};
+    this.#activeModals = [];
     this.#modalIdCounter = 0;
   }
 
@@ -119,15 +119,15 @@ export default class ModalHandler {
     }
   }
 
-  #handleEscapeKeyClose(closeHandler) {
+  #handleEscapeKeyClose(modalKey, closeHandler) {
     return e => {
       if (e.key === 'Escape') {
-        closeHandler(e);
+        closeHandler(e, modalKey);
       }
     }
   }
 
-  #handleOutsideClickClose(closeHandler, modalLmOuterLimits, exemptLms = []) {
+  #handleOutsideClickClose(modalKey, closeHandler, modalLmOuterLimits, exemptLms, modalKey) {
     return e => {
       const clickedLm = e.target;
       
@@ -142,7 +142,7 @@ export default class ModalHandler {
         return;
       }
 
-      closeHandler(e);
+      closeHandler(e, modalKey);
     }
   }
 
@@ -162,7 +162,7 @@ export default class ModalHandler {
         console.log(`[ModalHandler][DEBUG]: Close modal with key => "${modalKey}"`);
       }
 
-      closeHandler(); // Only close if this is the topmost modal
+      closeHandler(e, modalKey); // Only close if this is the topmost modal
     }
   }
 
@@ -265,7 +265,7 @@ export default class ModalHandler {
 
     // Register event handlers reference
     const handleActiveModalClose = this.#handleActiveModalClose(modalKey, closeHandler, modalLmOuterLimits);
-    const escapeKeyHandler = this.#handleEscapeKeyClose(handleActiveModalClose);
+    const escapeKeyHandler = this.#handleEscapeKeyClose(modalKey, handleActiveModalClose);
 
     // Ensure storage for this modal exists
     if (!this.#eventsHandler[modalKey]) this.#eventsHandler[modalKey] = [];
@@ -283,7 +283,7 @@ export default class ModalHandler {
     documentEvents.push({ eventName: 'keydown', callback: escapeKeyHandler });
     
     if (modalLmOuterLimits) {
-      const outsideClickHandler = this.#handleOutsideClickClose(handleActiveModalClose, modalLmOuterLimits, exemptLms);
+      const outsideClickHandler = this.#handleOutsideClickClose(modalKey, handleActiveModalClose, modalLmOuterLimits, exemptLms);
 
       // Use capture phase to detect outside clicks before event bubbling, 
       // preventing auto-close on overlay click after modal opens
@@ -319,7 +319,7 @@ export default class ModalHandler {
 
     const eventsHandler = this.#eventsHandler[modalKey];
 
-    // Event clean up
+    // Event cleanup
     eventsHandler.forEach(({ lm, eventName, callback, isOutsideClickHandler }) => {
       // if lm is undefined we just have to clear the body
       if (lm === undefined) lm = document.body;
