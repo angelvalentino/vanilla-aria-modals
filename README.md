@@ -124,12 +124,7 @@ Registers ARIA events and modal stacking handling:
 #### Parameters
 **Takes parameters as a single object, which are destructured inside the method.**
 
-- **`modalKey: string;`** Unique modal identifier. Used for stacking and event management.
-- **`modalLm?: HTMLElement | null;`** *(optional)* The main modal element. Used to trap focus inside the modal.
-- **`modalLmOuterLimits?: HTMLElement | null;`** *(optional)* The container that defines the modal boundary. Used to detect clicks outside the modal. **modalLm** is usually used here, but depending on the UI we may not want to trap focus into the same container we want to close, maybe just in a part of it.
-- **`closeLms?: HTMLElement[] | null;`** *(optional)* Array of elements that should trigger closing the modal (e.g., close buttons).
-- **`exemptLms?: HTMLElement[];`** *(optional)* Array of elements that should not trigger closing even if clicked outside.
-- **`closeHandler: (e: Event, modalKey: string) => void;`** Function to call when the modal should close. Usually should call **removeA11yEvents()**. Automatically receives the event **(e)** and **(modalKey)** from the wrapper; no need to pass as arguments. It’s up to the caller whether to use them.
+- **`modalKey: string;`** Unique modal identifier. Used for stacking and event management. - **`modalLm?: HTMLElement | null;`** *(optional)* The main modal element. Used to trap focus inside the modal. - **`modalLmOuterLimits?: HTMLElement | null;`** *(optional)* The container that defines the modal boundary. Used to detect clicks outside the modal. **modalLm** is usually used here, but depending on the UI we may not want to trap focus into the same container we want to close, maybe just in a part of it. - **`closeLms?: HTMLElement[] | null;`** *(optional)* Array of elements that should trigger closing the modal (e.g., close buttons). - **`exemptLms?: HTMLElement[];`** *(optional)* Array of elements that should not trigger closing even if clicked outside. - **`closeHandler: (e: Event, modalKey: string) => void;`** Function to call when the modal should close. Usually should call **removeA11yEvents()**. Automatically receives the event **(e)** and **(modalKey)** from the wrapper; no need to pass as arguments. It’s up to the caller whether to use them.
 If you need to pass additional arguments to the close handler, you can wrap it in a function that returns a handler accepting only the two parameters (`e` and `modalKey`):
   
   ```js
