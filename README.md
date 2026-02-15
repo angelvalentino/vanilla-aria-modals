@@ -125,7 +125,7 @@ Registers ARIA events and modal stacking handling:
 **Takes parameters as a single object, which are destructured inside the method.**
 
 - **`modalKey: string;`** Unique modal identifier. Used for stacking and event management.
-- **`modalLm?: HTMLElement | null;`** *(optional)* The main modal element. Used to trap focus inside the modal. 
+- **`modalLm?: HTMLElement | null;`** *(optional)* The main modal element. Used to trap focus inside the modal.
 - **`modalLmOuterLimits?: HTMLElement | null;`** *(optional)* The container that defines the modal boundary. Used to detect clicks outside the modal. **modalLm** is usually used here, but depending on the UI we may not want to trap focus into the same container we want to close, maybe just in a part of it.
 - **`closeLms?: HTMLElement[] | null;`** *(optional)* Array of elements that should trigger closing the modal (e.g., close buttons).
 - **`exemptLms?: HTMLElement[];`** *(optional)* Array of elements that should not trigger closing even if clicked outside.
