@@ -1,6 +1,23 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+All notable changes to this project will be documented in this file. Dates use ISO 8601 formatting, and version numbers follow [Semantic Versioning](https://semver.org/).
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/).
+
+## [1.1.0] - 2026-02-15
+
+### Added
+- Support automatic modal key generation
+- Add a manual method to rebind the trap focus handler
+
+### Changed
+- Improve automation and simplify logic flow
+- Improve event-bubbling guard by binding the overlay method with `capture: true` and removing the dependency on asynchronous behavior and `e.stopPropagation`
+- Extend `closeHandler` method with a new `modalKey` parameter for caller usage
+
+### Fixed
+- Prevent overlayless modals from breaking the stacking order
+
 
 ## [1.0.3] - 2026-01-23
 ### Fixed

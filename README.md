@@ -1,6 +1,9 @@
 # ModalHandler
 
+See the full release history and updates in the [Changelog](https://github.com/angelvalentino/vanilla-aria-modals/blob/main/CHANGELOG.md).
+
 ## Introduction
+
 
 `ModalHandler` is a framework-agnostic utility for managing accessibility (A11y) events in modals or modal-like UIs within your web application. It supports modal stacking and key accessibility features, including focus trapping, focus management, and closing modals with the Escape key or an outside click.
 
