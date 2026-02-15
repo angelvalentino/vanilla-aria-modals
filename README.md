@@ -130,6 +130,21 @@ Registers ARIA events and modal stacking handling:
 - **`closeLms?: HTMLElement[] | null;`** *(optional)* Array of elements that should trigger closing the modal (e.g., close buttons).
 - **`exemptLms?: HTMLElement[];`** *(optional)* Array of elements that should not trigger closing even if clicked outside.
 - **`closeHandler: (e: Event, modalKey: string) => void;`** Function to call when the modal should close. Usually should call **removeA11yEvents()**. Automatically receives the event **(e)** and **(modalKey)** from the wrapper; no need to pass as arguments. It’s up to the caller whether to use them.
+If you need to pass additional arguments to the close handler, you can wrap it in a function that returns a handler accepting only the two parameters (`e` and `modalKey`):
+  
+  ```js
+  const closeModalWrapper = (...args) => {
+    // Returns a handler that the utility calls internally with e and modalKey
+    return (e, modalKey) => {
+      // Your logic for the close handler here 
+      // Access to parameters thanks to closures
+    }
+  }
+
+  modalHandler.addA11yEvents({
+    closeHandler: closeModalWrapper(...args)
+  });
+  ```
 
 Returns `void`
 
@@ -208,6 +223,6 @@ Returns `void`
 
 Re-attaches the focus-trapping event listener for a specific modal. The internal **trapFocus** method already queries the DOM on each keyboard event, so in most cases, manually rebinding is not necessary.
 
-- **`modalKey: string`** The unique key of the modal whose focus trap should be rebound.
+- **`modalKey: string;`** The unique key of the modal whose focus trap should be rebound.
 
 returns `void`

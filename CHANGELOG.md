@@ -4,8 +4,11 @@ All notable changes to this project will be documented in this file. Dates use I
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
-## [1.1.0] - 2026-02-15
+## [1.1.1] - 2026-02-15
+### Fixed
+- Fix typos, update changelog, and add an example wrapper usage for the `closeHandler`.
 
+## [1.1.0] - 2026-02-15
 ### Added
 - Support automatic modal key generation
 - Add a manual method to rebind the trap focus handler
@@ -17,7 +20,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Fixed
 - Prevent overlayless modals from breaking the stacking order
-
 
 ## [1.0.3] - 2026-01-23
 ### Fixed
