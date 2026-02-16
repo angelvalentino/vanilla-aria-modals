@@ -210,6 +210,8 @@ Returns `void`
 ### generateKey()
 Generates a unique identifier for the modal.
 
+#### Parameters
+
 - **`prefix?: string;`** Optional prefix to modify the generated modal key.
 
 Returns `string`. The generated modal key to be used later in the code.
@@ -224,6 +226,8 @@ Returns `void`
 
 Re-attaches the focus-trapping event listener for a specific modal. The internal **trapFocus** method already queries the DOM on each keyboard event, so in most cases, manually rebinding is not necessary.
 
+#### Parameters
+
 - **`modalKey: string;`** The unique key of the modal whose focus trap should be rebound.
 
-returns `void`
+Returns `void`

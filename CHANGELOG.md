@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. Dates use I
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.1.3] - 2026-02-16
+### Fixed
+- Add missing parameter titles to `README.md`. 
+
 ## [1.1.2] - 2026-02-15
 ### Fixed
 - Unify `README.md` formatting for all bullet points. Previously, in some Markdown views, the bullet points format from the `addA11yEvents` method was broken due to a code block. This has been corrected so everything now displays consistently.
