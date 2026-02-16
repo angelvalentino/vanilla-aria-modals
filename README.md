@@ -1,17 +1,16 @@
-# ModalHandler
+# vanilla-aria-modals
 
 See the full release history and updates in the [Changelog](https://github.com/angelvalentino/vanilla-aria-modals/blob/main/CHANGELOG.md).
 
 ## Introduction
 
-
-`ModalHandler` is a framework-agnostic utility for managing accessibility (A11y) events in modals or modal-like UIs within your web application. It supports modal stacking and key accessibility features, including focus trapping, focus management, and closing modals with the Escape key or an outside click.
+`vanilla-aria-modals` is a framework-agnostic utility for managing accessibility (A11y) events in modals or modal-like UIs within your web application. It supports modal stacking and key accessibility features, including focus trapping, focus management, and closing modals with the Escape key or an outside click.
 
 Although designed primarily for modal interactions, it can be used in any UI logic that requires basic ARIA support and focus management.
 
 It supports a dynamic number of modals and events. In SPAs or dynamic interfaces, navigating away or re-rendering a component without closing a modal can leave lingering event listeners on `document.body`, which may interfere with future interactions. A reset method is provided to call on route changes or component unmounts. See more at: [SPA / Advanced Usage](#spa--advanced-usage)
 
-`ModalHandler` is written in vanilla JS for full flexibility. You can modify it directly in `node_modules` if needed. Just update the `.d.ts` file when changing public methods to keep IntelliSense accurate. Internals documentation, such as architecture and logic flow can be found [here](https://github.com/angelvalentino/vanilla-aria-modals/blob/main/docs/architecture.md).
+Written in vanilla JS for full flexibility. You can modify it directly in `node_modules` if needed. Just update the `.d.ts` file when changing public methods to keep IntelliSense accurate. Internals documentation, such as architecture and logic flow can be found [here](https://github.com/angelvalentino/vanilla-aria-modals/blob/main/docs/architecture.md).
 
 ## Set up
 
@@ -92,14 +91,17 @@ In Single Page Applications (SPA) or frameworks like React, Vue, or vanilla JS w
 ```js
 // Suppose your SPA route or component changes
 function onRouteChange() {
-  // Clear leftover document events, active modals, focus tracking and modal ID key counter
+  // Clear leftover document events, active modals, focus tracking, modal ID key counter 
+  // and overlayless modals registry
   modalHandler.reset();
 
   // Or individually:
-  // modalHandler.clearDocumentBodyEvents();
-  // modalHandler.clearActiveModals();
-  // modalHandler.clearFocusRegistry();
-  // modalHandler.resetKeys();
+  // modalHandler
+  //  .clearDocumentBodyEvents()
+  //  .clearActiveModals()
+  //  .clearFocusRegistry()
+  //  .resetKeys()
+  //  .clearPopups();
 }
 ```
 <br>
@@ -114,8 +116,59 @@ Enables or disables debug logs, aimed for reviewing stacked modals, clear and cl
 
 Returns `void`
 
+### generateKey()
+Generates a unique identifier for the modal.
+
+#### Parameters
+
+- **`prefix?: string;`** Optional prefix to modify the generated modal key.
+
+Returns `string`. The generated modal key to be used later in the code.
+
+### clearDocumentBodyEvents()
+Clears any leftover document body event listeners.
+
+Returns `this`
+
+### clearActiveModals()
+Resets the active modal stack.
+
+Returns `this`
+
+### clearFocusRegistry()
+Clears stored focus references.
+
+Returns `this`
+
+### resetKeys()
+
+Resets the internal modal key counter back to 0.
+
+Returns `this`
+
+### clearPopups()
+
+Clears the internal overlayless modals (popups) array
+
+Returns `this`
+
+### reset()
+Combines **clearDocumentBodyEvents()**, **clearActiveModals()**, **clearFocusRegistry()**, **resetKeys**, **clearPopups()** for a full cleanup.
+
+Returns `void`
+
+### rebindTrapFocus()
+
+Re-attaches the focus-trapping event listener for a specific modal. The internal **trapFocus** method already queries the DOM on each keyboard event, so in most cases, manually rebinding is not necessary.
+
+#### Parameters
+
+- **`modalKey: string;`** The unique key of the modal whose focus trap should be rebound.
+
+Returns `void`
+
 ### addA11yEvents()
-Registers ARIA events and modal stacking handling:
+Registers A11y events and modal stacking handling:
 - Close at overlay click
 - Close at ESC key
 - Trap focus
@@ -151,13 +204,12 @@ Returns `void`
 
 ### removeA11yEvents()
 
-Removes all accessibility and interaction event listeners for the specific registered modal.
+Removes all A11y event listeners for the specific registered modal.
 
 #### Parameters
 **Takes parameters as a single object, which are destructured inside the method.**
 
 - **`modalKey: string;`** Unique modal identifier. Must match the modalKey used in **addA11yEvents()**.
-- **`isToggle?: boolean;`** Optional flag to indicate that the modal (no overlay, usually popups with toggle logic) is being closed via a toggle action (outside of the usual close handler). Setting this flag to **true** ensures the modal is properly removed from the active stack, even when called outside of any closing handler.
 
 Returns `void`
 
@@ -184,50 +236,5 @@ Restores focus to the element that was active before the modal opened.
 - **`modalKey: string;`** Unique modal identifier.
 - **`lastFocusedLm?: HTMLElement | null;`** *(optional)* Custom element to restore focus to if auto is **false**.
 - **`auto?: boolean;`** *(optional)* Defaults to **true**. If **false**, uses lastFocusedLm to restore focus instead of the stored one.
-
-Returns `void`
-
-### clearDocumentBodyEvents()
-Clears any leftover document body event listeners.
-
-Returns `void`
-
-### clearActiveModals()
-Resets the active modal stack.
-
-Returns `void`
-
-### clearFocusRegistry()
-Clears stored focus references.
-
-Returns `void`
-
-### reset()
-Combines **clearDocumentBodyEvents()**, **clearActiveModals()**, **clearFocusRegistry()** for a full cleanup.
-
-Returns `void`
-
-### generateKey()
-Generates a unique identifier for the modal.
-
-#### Parameters
-
-- **`prefix?: string;`** Optional prefix to modify the generated modal key.
-
-Returns `string`. The generated modal key to be used later in the code.
-
-### resetKeys()
-
-Resets the internal modal key counter back to 0.
-
-Returns `void`
-
-### rebindTrapFocus()
-
-Re-attaches the focus-trapping event listener for a specific modal. The internal **trapFocus** method already queries the DOM on each keyboard event, so in most cases, manually rebinding is not necessary.
-
-#### Parameters
-
-- **`modalKey: string;`** The unique key of the modal whose focus trap should be rebound.
 
 Returns `void`

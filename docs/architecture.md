@@ -7,11 +7,11 @@ This document describes the internal architecture of `ModalHandler`, including p
 > **Note:** This document does not replace reading the actual code. Many internal behaviors rely on private methods and closures, which are essential to understand before making any modifications. 
 💾 Modifications to the public API of the class should be accompanied by updates to the corresponding **.d.ts** file to ensure accurate IntelliSense.
 
-`ModalHandler` handles modal stacking, focus management, ARIA event registration, and restoration. Internally, it uses private properties and methods to manage:  
+`ModalHandler` handles modal stacking, focus management, A11y event registration and restoration. Internally, it uses private properties and methods to manage:  
 
 - Event handlers for body and modal elements to keep track of function references
-- Active modal stack to be able to close only current modal
-- Focus tracking and restoration  
+- Active modal stack to close only the current modal or let overlayless modals bypass stack order
+- Modular focus tracking and restoration  
 - Debug logging  
 
 Understanding the flow of modal registration, event attachment, and focus handling is key to modifying or extending the class safely.
@@ -31,12 +31,16 @@ The lifecycle of a modal in `ModalHandler` can be summarized as follows. The uti
 
 #### Logic flow
 
-- The method first checks whether `auto` is **true**.  
-  - If **true**, it verifies that the provided `modalKey` is not already registered in the focus registry. If a duplicate key is detected, a warning is logged and execution stops. The currently active element is then stored internally so focus can be restored later.  
-  - If **false**, no registry validation is required, and the currently active element is returned to the caller for manual management.
 
+- Check if `auto` is **true**:
+  - If **true**, verify `modalKey` is not in the focus registry; log a warning and stop on duplicates.
+  - If **false**, skip registry validation.  
 
-- A short timeout is applied before focusing the first focusable element inside the modal. This ensures the DOM is fully rendered and prevents inconsistent focus behavior due to timing issues.
+- Use the caller-provided element for active focus if given; otherwise, use `document.activeElement`.  
+
+- If `auto` is **true**, store the active element (caller-provided or `document.activeElement`) with the `modalKey`; if **false**, return it for manual management.
+
+- Apply a short timeout before focusing the first focusable element to ensure the DOM is fully rendered.
 
 
 ### (2) **Adding Events**
@@ -47,21 +51,22 @@ The lifecycle of a modal in `ModalHandler` can be summarized as follows. The uti
 
 - `#registerModal()` registers the modal key in the active modal stack. If the key is already present, a warning is logged and execution stops.
 
-- `#handleActiveModalClose()` wraps the provided `closeHandler` to ensure that only the topmost modal in the stack can be closed. It also accounts for edge cases such as overlayless modals (popups). In those cases, stack enforcement is ignored only for click events originating inside the modal element associated with that close handler.
-  - Within the same method, the modal is unregistered from the stack when a valid close occurs. If the modal key does not exist in the registry, the method returns early and the `closeHandler` is not executed.
+- `#handleActiveModalClose()` wraps the provided `closeHandler` to ensure that only the topmost modal in the stack can be closed. It also accounts for edge cases such as overlayless modals (popups). In those cases, stack enforcement is ignored only for click events.
 
 - `#handleEscapeKeyClose()` creates the Escape key handler. This listener is always attached because Escape-based closing is essential for accessibility and minimum ARIA compliance. the handler reference is stored for cleanup.
 
 After this initial setup, conditional logic attaches additional listeners based on the provided options:
 
-- If `modalLmOuterLimits` is provided, a click listener is added to detect clicks outside the specified element and close the modal. The handler reference is stored for cleanup.  
-  - Attached with **capture: true** so it triggers during the capture phase rather than bubbling. This approach avoids relying on timing or asynchronous workarounds, such as using timeouts or stopping propagation, and provides the most reliable behavior based on testing.
+- If `modalLmOuterLimits` is not provided, we keep track of the modal with its respective `modalKey` in the internal `#popups` array for overlayless modals.
 
-- If `modalLm` is **true**, a focus trap handler is attached to enforce focus containment within the modal. The handler reference is stored for removal.
+- If `modalLmOuterLimits` is provided, a click listener is added to detect clicks outside the specified element and close the modal. The handler reference is stored for cleanup.  
+  - Attached with **capture: true** so it triggers during the capture phase rather than bubbling. This approach avoids relying on timing or asynchronous workarounds, such as using timeouts or stopping propagation, and provides the most reliable behavior.
+
+- If `modalLm` is **true**, a focus trap handler is attached to enforce focus management within the modal. The handler reference is stored for removal.
 - If `closeLms` are provided, the given `closeHandler`, wrapped with `#handleActiveModalClose()`, is attached to those elements. The handler references are stored internally so they can be removed during cleanup.
 
 
-Event listeners are attached to **document body** and relevant modal elements as required. Only the Escape key listener is mandatory. All other listeners are optional, allowing flexible usage of the class.
+Event listeners are attached to `document.body` and relevant modal elements as required. Only the Escape key listener is mandatory. All other listeners are optional, allowing flexible usage of the class.
 
 All handler references are stored internally under the corresponding `modalKey`. Document body handlers are tracked separately as well to ensure proper cleanup during SPA route changes, re-renders, or when `reset()` is called.
 
@@ -85,7 +90,9 @@ All handler references are stored internally under the corresponding `modalKey`.
 
 #### Logic flow
 
-- `#unregisterModal()` is usually handled by the wrapped `closeHandler` via `#handleActiveModalClose()`. However, if `toggle` is **true**, the modal may be closed by an external button, so we need to unregister it manually at the start of the event cleanup. In this case, the stack order is ignored because the modal is overlayless (popup) and is closed via a toggle button, so it can be closed in any order.
+- Checks if the modal to be removed is overlayless; if so, it sets the `isOverlayLess` flag to **true**.
+
+- Calls `#unregisterModal()` to unregister the respective `modalKey`. If the key is not present, a warning is logged and execution stops. We also check for overlayless modals in case we need to ignore stack order, but only for click events. Keep in mind that overlayless modals triggered by a click are checked inside `#handleActiveModalClose`, ensuring this behavior only occurs in that context. Otherwise, normal stack order is followed, and the modal is unregistered as usual.
 
 - All event listeners associated with the modal are removed, including the **Escape** key handler, **outside click** handler, **close button** handlers, and **focus trap**. Because these listeners are optional, only those that were previously registered are removed.
 
@@ -98,11 +105,11 @@ All handler references are stored internally under the corresponding `modalKey`.
 
 #### Logic flow
 
-- Clears all **document body** event listeners, resets the **active modal stack**, clears the **focus registry**, and resets the automatic **modal ID counter**.
+- Clears all **document body** event listeners, resets the **active modal stack**, clears the **focus registry**, resets the automatic **modal ID counter** and clears the **overlayless modals registry**.
 
 - This is especially important in SPA environments where **document body** does not re-render between views and lingering event listeners could accumulate.
 
-- The individual cleanup methods `clearDocumentBodyEvents()`, `clearActiveModals()`, `clearFocusRegistry()`, and `resetKeys()` can also be called separately when finer control is needed.
+- The individual cleanup methods `clearDocumentBodyEvents()`, `clearActiveModals()`, `clearFocusRegistry()`, `resetKeys()`, and `clearPopups()` can also be called separately when finer control is needed.
 
 <br>
 
@@ -127,11 +134,11 @@ Managed by: **setDebug()**
 #eventsHandler = {
   modalKey: [
     {
-      lm: HTMLElement, // Optional. If not provided, defaults to `document.body`
+      lm: HTMLElement, // Optional. If not provided, defaults to document.body
       eventName: 'click'/'keydown',
       callback: closeHandler(),
-      isOutsideClickHandler: true/false // Flag used to pass `capture: true` only for the outside-click handler, at cleanup for removal
-      isTrapFocusHandler: true/false // Used in `rebindTrapFocus` logic to locate the specific event handler based on the provided modal key
+      isOutsideClickHandler: true/false // Flag used to pass (capture: true) only for the outside-click handler, at cleanup for removal
+      isTrapFocusHandler: true/false // Used in rebindTrapFocus() logic to locate the specific event handler based on the provided modal key
     },
     ...
   ],
@@ -164,10 +171,7 @@ Managed by: **setDebug()**
 `#activeModals` tracks the stack of currently active modal keys. The topmost modal is the last item in the array.
 
 ```js
-#activeModals = [
-  'modalKey',
-  ...
-]
+#activeModals = [...modalkeys];
 ```
 
 - Tracked by: **#isActiveModal()**
@@ -175,14 +179,24 @@ Managed by: **setDebug()**
 - Indirectly affected by: **reset()**
 
 ### ID Counter
-`#modalIdCounter` tracks the current nmber of active modals in stack
+`#modalIdCounter` tracks the current number of active modals in stack.
 
 ```js
 #modalIdCounter = 0; // Initial value
 this.#modalIdCounter++; // Increments when a new modal ID key is added
 ```
 
-- Managed by: **generateKey()**, **resetKeys()**, **reset()**  
+- Managed by: **generateKey()**, **resetKeys()** 
+- Indirectly affected by: **reset()**
+
+### Overlayless Modals Registry
+`#popups` tracks the current number of active overlayless modals (popups).
+
+```js
+#popups = [...modalkeys];
+```
+
+- Managed by: **clearPopups()**
 - Indirectly affected by: **reset()**
 
 <br>
@@ -213,6 +227,7 @@ Removes the modal with the given key from the active stack.
 #### Parameters
 
 - **`modalKey: string;`** Unique modal identifier.
+- **`isOverlayLess: boolean;`** Whether the modal to unregister is overlayless. If so, it ignores stack order.
 
 Returns `boolean`. **true** if the modal was removed, **false** if the key did not exist.
 

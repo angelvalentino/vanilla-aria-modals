@@ -168,12 +168,17 @@ export default class ModalHandler {
     }
   }
 
+  generateKey(prefix = 'modal') {
+    this.#modalIdCounter = (this.#modalIdCounter || 0) + 1;
+    return `${prefix}-${this.#modalIdCounter}`;
+  }
+
   clearDocumentBodyEvents() {
     const documentBodyEvents = this.#eventsHandler.documentBody;
 
     if (documentBodyEvents) {
       if (this.#debug) {
-        console.log('[ModalHandler][DEBUG]: Stored document body events before clearing => ', documentBodyEvents);
+        console.log('[ModalHandler][DEBUG]: Stored document body events before clear => ', documentBodyEvents);
       }
 
       for (const key in documentBodyEvents) {
@@ -192,7 +197,7 @@ export default class ModalHandler {
       }
 
       if (this.#debug) {
-        console.log('[ModalHandler][DEBUG]: Stored document body events after clearing => ', documentBodyEvents);
+        console.log('[ModalHandler][DEBUG]: Stored document body events after clear => ', documentBodyEvents);
       }
     } 
     else {
@@ -200,23 +205,27 @@ export default class ModalHandler {
         console.log('[ModalHandler][DEBUG]: No document body events were found to be cleared.');
       }
     }
+
+    return this;
   }
 
   clearActiveModals() {
     if (this.#debug) {
-      console.log('[ModalHandler][DEBUG]: Active modal stack before clearing => ', this.#activeModals);
+      console.log('[ModalHandler][DEBUG]: Active modal stack before clear => ', this.#activeModals);
     }
 
     this.#activeModals.length = 0;
 
     if (this.#debug) {
-      console.log('[ModalHandler][DEBUG]: Active modal stack after clearing => ', this.#activeModals);
+      console.log('[ModalHandler][DEBUG]: Active modal stack after clear => ', this.#activeModals);
     }
+
+    return this;
   }
 
   clearFocusRegistry() {
     if (this.#debug) {
-      console.log('[ModalHandler][DEBUG]: Focus registry before clearing => ', this.#focusHandler);
+      console.log('[ModalHandler][DEBUG]: Focus registry before clear => ', this.#focusHandler);
     }
 
     for (const key in this.#focusHandler) {
@@ -224,29 +233,47 @@ export default class ModalHandler {
     }
 
     if (this.#debug) {
-      console.log('[ModalHandler][DEBUG]: Focus registry after clearing => ', this.#focusHandler);
+      console.log('[ModalHandler][DEBUG]: Focus registry after clear => ', this.#focusHandler);
     }
-  }
 
-  reset() {
-    this.clearDocumentBodyEvents();
-    this.clearActiveModals();
-    this.clearFocusRegistry();
-    this.resetKeys();
-    this.clearPopups();
-  }
-
-  generateKey(prefix = 'modal') {
-    this.#modalIdCounter = (this.#modalIdCounter || 0) + 1;
-    return `${prefix}-${this.#modalIdCounter}`;
+    return this;
   }
 
   resetKeys() {
+    if (this.#debug) {
+      console.log('[ModalHandler][DEBUG]: Modal ID counter before reset => ', this.#modalIdCounter);
+    }
+
     this.#modalIdCounter = 0;
+
+    if (this.#debug) {
+      console.log('[ModalHandler][DEBUG]: Modal ID counter after reset => ', this.#modalIdCounter);
+    }
+
+    return this;
   }
 
   clearPopups() {
+    if (this.#debug) {
+      console.log('[ModalHandler][DEBUG]: Overlayless modals registry before clear => ', this.#popups);
+    }
+
     this.#popups.length = 0;
+
+    if (this.#debug) {
+      console.log('[ModalHandler][DEBUG]: Overlayless modals registry after clear => ', this.#popups);
+    }
+
+    return this;
+  }
+
+  reset() {
+    this
+      .clearDocumentBodyEvents()
+      .clearActiveModals()
+      .clearFocusRegistry()
+      .resetKeys()
+      .clearPopups();
   }
 
   rebindTrapFocus(modalKey) {

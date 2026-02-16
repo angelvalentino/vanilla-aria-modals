@@ -3,17 +3,19 @@ export default class ModalHandler {
 
     setDebug(bool: boolean): void;
 
-    clearDocumentBodyEvents(): void;
-
-    clearActiveModals(): void;
-
-    clearFocusRegistry(): void;
-
-    reset(): void;
-
     generateKey(prefix?: string): string;
 
-    resetKeys(): void;
+    clearDocumentBodyEvents(): this;
+
+    clearActiveModals(): this;
+
+    clearFocusRegistry(): this;
+
+    resetKeys(): this;
+
+    clearPopups(): this;
+
+    reset(): void;
 
     rebindTrapFocus(modalKey: string): void;
 
