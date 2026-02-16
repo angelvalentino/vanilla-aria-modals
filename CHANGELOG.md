@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file. Dates use I
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.1.4] - 2026-02-16
+### Fixed
+- Improve overlayless modal close logic. Removed the `isToggle` parameter from `removeA11yEvents` as it is no longer needed. The logic now works more smoothly, only unregisters modals in `removeA11yEvents` instead of the close handler wrapper, and preserves the overlayless modal bypass behavior
+
+### Changed
+- Update documentation, method order and chaining, and debug statements
+
 ## [1.1.3] - 2026-02-16
 ### Fixed
 - Add missing parameter titles to `README.md`. 
@@ -31,15 +38,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [1.0.3] - 2026-01-23
 ### Fixed
-- Improved `README.md` format for usage section
+- Improve `README.md` format for usage section
 
 ## [1.0.2] - 2026-01-23
 ### Fixed
-- Updated `package.json` keywords
+- Update `package.json` keywords
 
 ## [1.0.1] - 2026-01-23
 ### Fixed
-- Updated installation instructions for `README.md`
+- Update installation instructions for `README.md`
 
 ## [1.0.0] - 2026-01-23
 ### Added
