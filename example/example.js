@@ -227,8 +227,7 @@ function generatePopup(className) {
       });
     } 
     else {
-      // remove aria events
-      modalHandler.removeA11yEvents({ modalKey: className, isToggle: true });
+      closePopup();
     }
   });
 

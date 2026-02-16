@@ -3,7 +3,8 @@ export default class ModalHandler {
   #eventsHandler;
   #focusHandler;
   #activeModals;
-  #modalIdCounter
+  #modalIdCounter;
+  #popups;
 
   constructor() {
     if (ModalHandler.instance) return ModalHandler.instance;
@@ -13,6 +14,7 @@ export default class ModalHandler {
     this.#focusHandler = {};
     this.#activeModals = [];
     this.#modalIdCounter = 0;
+    this.#popups = [];
   }
 
   setDebug(bool) {
@@ -50,10 +52,12 @@ export default class ModalHandler {
     if (this.#debug) {
       console.log('[ModalHandler][DEBUG]: Active modal stack before filtering => ', this.#activeModals);
     }
-
+    
+    // Check if the modal closed is overlayless (popup), 
+    // if so clear it from the stack without following normal LIFO order
     if (isOverlayLess) {
       if (this.#debug) {
-        console.log('[ModalHandler][DEBUG]: Overlayless modal closed ignoring stacking order.');
+        console.log('[ModalHandler][DEBUG]: Overlayless modal closed ignoring stacking order. (only click events)');
       }
 
       this.#activeModals = this.#activeModals.filter(key => key !== modalKey);
@@ -151,12 +155,10 @@ export default class ModalHandler {
       // Check if modal is overlayless and triggered by click so we can ignore stacking order later
       const isOverlayLess = !modalLmOuterLimits && e?.type === 'click';
 
+      // Only check stack for modals with overlay
       if (!isOverlayLess && !this.#isActiveModal(modalKey)) {
         return;
       }
-
-      const isRegistered = this.#unregisterModal(modalKey, isOverlayLess);
-      if (!isRegistered) return;
 
       if (this.#debug) {
         console.log(`[ModalHandler][DEBUG]: Close modal with key => "${modalKey}"`);
@@ -231,6 +233,7 @@ export default class ModalHandler {
     this.clearActiveModals();
     this.clearFocusRegistry();
     this.resetKeys();
+    this.clearPopups();
   }
 
   generateKey(prefix = 'modal') {
@@ -240,6 +243,10 @@ export default class ModalHandler {
 
   resetKeys() {
     this.#modalIdCounter = 0;
+  }
+
+  clearPopups() {
+    this.#popups.length = 0;
   }
 
   rebindTrapFocus(modalKey) {
@@ -282,6 +289,10 @@ export default class ModalHandler {
     // so lingering events can be removed if the modal stays open across re-renders
     documentEvents.push({ eventName: 'keydown', callback: escapeKeyHandler });
     
+    if (!modalLmOuterLimits) {
+      this.#popups.push(modalKey); // Register overlayless modal
+    }
+
     if (modalLmOuterLimits) {
       const outsideClickHandler = this.#handleOutsideClickClose(modalKey, handleActiveModalClose, modalLmOuterLimits, exemptLms);
 
@@ -307,15 +318,13 @@ export default class ModalHandler {
   }
 
   removeA11yEvents({
-    modalKey,
-    isToggle,
+    modalKey
   }) {
-    if (isToggle) {
-      const removed = this.#unregisterModal(modalKey, isToggle);
-      if (this.#debug && removed) {
-        console.log('[ModalHandler][DEBUG]: Overlayless modal not triggered on close; removed via event cleanup.');
-      }
-    }
+    const index = this.#popups.indexOf(modalKey); // Check if overlayless modal exists
+    const isOverlayLess = index !== -1 && this.#popups.splice(index, 1).length // Remove key from popups array
+
+    const isRegistered = this.#unregisterModal(modalKey, isOverlayLess);
+    if (!isRegistered) return;
 
     const eventsHandler = this.#eventsHandler[modalKey];
 
