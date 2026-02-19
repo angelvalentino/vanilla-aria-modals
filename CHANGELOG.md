@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. Dates use I
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.1.5] - 2026-02-19
+### Fixed
+- Remove the unnecessary `isToggle` parameter type definition from the `.d.ts` file.
+
 ## [1.1.4] - 2026-02-16
 ### Fixed
 - Improve overlayless modal close logic. Removed the `isToggle` parameter from `removeA11yEvents` as it is no longer needed. The logic now works more smoothly, only unregisters modals in `removeA11yEvents` instead of the close handler wrapper, and preserves the overlayless modal bypass behavior
