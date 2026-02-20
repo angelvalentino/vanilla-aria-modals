@@ -80,15 +80,15 @@ export default class ModalHandler {
   }
 
   #trapFocus(e, element) {
-    // Select all focusable elements within the given element
-    const focusableLms = element.querySelectorAll(`
+    // Select all visible (not hidden) focusable elements within the given element
+    const focusableLms = [...element.querySelectorAll(`
       a[href]:not([disabled]), 
       button:not([disabled]), 
       textarea:not([disabled]), 
       input:not([disabled]), 
       select:not([disabled]),
       [tabindex]:not([tabindex="-1"])
-    `);
+    `)].filter(lm => lm.offsetParent !== null && getComputedStyle(lm).visibility !== 'hidden');
     // Get the first and last focusable elements
     const firstFocusableLm = focusableLms[0]; 
     const lastFocusableLm = focusableLms[focusableLms.length - 1];
@@ -399,6 +399,11 @@ export default class ModalHandler {
     const lastFocusableLm = lastFocusedLm ? lastFocusedLm : document.activeElement;
     if (auto) this.#focusHandler[modalKey] = lastFocusableLm;
 
+    if (this.#debug) {
+      console.log(`[ModalHandler][DEBUG]: Focusing first element in modal "${modalKey}" => `, firstFocusableLm);
+      console.log(`[ModalHandler][DEBUG]: ${auto ? 'Stored' : 'Returned'} last focused element for modal "${modalKey}" => `, lastFocusableLm);
+    }
+
     // Needs a timeout for keyboard navigation, if not focus is unreliable
     setTimeout(() => {
       firstFocusableLm.focus();
@@ -418,7 +423,16 @@ export default class ModalHandler {
     }
 
     const lastFocusableLm = auto ? this.#focusHandler[modalKey] : lastFocusedLm;
+
+    if (this.#debug) {
+      console.log(`[ModalHandler][DEBUG]: Restoring focus for modal "${modalKey}" to element => `, lastFocusableLm);
+    }
+
     lastFocusableLm.focus();
+
+    if (this.#debug && auto) {
+      console.log(`[ModalHandler][DEBUG]: Cleared stored focus for modal "${modalKey}"`);
+    }
 
     // Clean up the stored focus
     if (auto) {
