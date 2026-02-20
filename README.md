@@ -14,7 +14,7 @@ Written in vanilla JS for full flexibility. You can modify it directly in `node_
 
 ## Set up
 
-```js
+```javascript
 import ModalHandler from 'vanilla-aria-modals';
 const modalHandler = new ModalHandler();
 ```
@@ -33,7 +33,7 @@ A fully detailed example including the necessary JavaScript, HTML, and CSS files
 
 **Note:** `lm` in the code stands for *HTMLElement*.
 
-```js
+```javascript
 // Basic example of showing a modal
 showModal() {
   modalContainerLm.style.display = 'block';
@@ -88,7 +88,7 @@ In Single Page Applications (SPA) or frameworks like React, Vue, or vanilla JS w
 
 ### Example: Cleanup on route change or component unmount
 
-```js
+```javascript
 // Suppose your SPA route or component changes
 function onRouteChange() {
   // Clear leftover document events, active modals, focus tracking, modal ID key counter 
@@ -186,7 +186,7 @@ Registers A11y events and modal stacking handling:
 
 If you need to pass additional arguments to the close handler, you can wrap it in a function that returns a handler accepting only the two parameters (`e` and `modalKey`):
   
-```js
+```javascript
 const closeModalWrapper = (...args) => {
   // Returns a handler that the utility calls internally with e and modalKey
   return (e, modalKey) => {

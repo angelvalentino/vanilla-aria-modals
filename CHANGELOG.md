@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file. Dates use I
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.1.6] - 2026-02-20
+### Fixed
+- Update trap focus logic to ignore hidden elements, selecting only visible focusable ones
+
+### Added
+- Informational debug statements for focus management
+- Example JS now toggles `inert` on `<main>` when a modal opens
+
 ## [1.1.5] - 2026-02-19
 ### Fixed
 - Remove the unnecessary `isToggle` parameter type definition from the `.d.ts` file.
