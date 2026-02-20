@@ -42,6 +42,7 @@ function showModal({
 }) {
   clearTimeout(closeModalTimId);
   
+  document.querySelector('main').inert = true;
   document.body.style.overflow = 'hidden';
   modalContainerLm.style.display = 'flex';
   openModalBtn.setAttribute('aria-expanded', 'true');
@@ -68,6 +69,7 @@ function hideModal({
   openModalBtn,
   modalKey
 }) {
+  modalContainerLm.id === 'first-modal' && (document.querySelector('main').inert = false); 
   document.body.style.overflow = '';
   modalContentLm.style.transform = 'scale(0)';
   modalOverlayLm.style.opacity = 0;
