@@ -200,6 +200,7 @@ function generatePopup(className) {
   
   const closePopup = () => {
     popupLm.classList.remove("active");
+    modalHandler.restoreFocus({ modalKey: className });
     modalHandler.removeA11yEvents({ modalKey: className });
   };
 
@@ -221,7 +222,10 @@ function generatePopup(className) {
     const isOpen = popupLm.classList.toggle("active");
 
     if (isOpen) {
-      // add aria events
+      modalHandler.addFocus({
+        modalKey: className,
+        firstFocusableLm: closeBtn
+      });
       modalHandler.addA11yEvents({
         modalKey: className,
         closeHandler: closePopup,
